@@ -7532,6 +7532,16 @@ body:has(#calendarSection[style*="display: block"]) .content {
                 isMobile() {
                     return this.isAndroid() || /BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent || "");
                 },
+                isPhone() {
+                    const ua = navigator.userAgent || "";
+                    if (/iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(ua)) return true;
+                    if (/Android/i.test(ua) && /Mobile/i.test(ua)) return true;
+                    const viewport = window.visualViewport;
+                    const width = Math.round(Math.max((viewport && viewport.width) || 0, window.innerWidth || 0, document.documentElement.clientWidth || 0, 1));
+                    const height = Math.round(Math.max((viewport && viewport.height) || 0, window.innerHeight || 0, document.documentElement.clientHeight || 0, 1));
+                    const coarsePointer = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+                    return !!(coarsePointer && Math.min(width, height) <= 575);
+                },
                 isCapacitor() {
                     return !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
                 },
@@ -7652,15 +7662,27 @@ body:has(#calendarSection[style*="display: block"]) .content {
                         }
                         return false;
                     }
+                    if (!this.isPhone()) {
+                        this.copyText(phoneNumber)
+                            .then((ok) => {
+                                if (!ok) throw new Error("Clipboard non disponibile");
+                                if (typeof showNotification === "function") {
+                                    showNotification(`Numero ${phoneNumber} copiato negli appunti.`, "success");
+                                }
+                            })
+                            .catch(() => {
+                                if (typeof showNotification === "function") {
+                                    showNotification("Numero pronto da copiare: " + phoneNumber, "info");
+                                }
+                            });
+                        return true;
+                    }
                     const link = document.createElement("a");
                     link.href = `tel:${phoneNumber}`;
                     link.style.display = "none";
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    if (!this.isMobile() && typeof copyToClipboard === "function") {
-                        window.setTimeout(() => copyToClipboard(phoneNumber), 250);
-                    }
                     return true;
                 },
                 sendEmail(email) {
@@ -8327,7 +8349,8 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             function copyToClipboard(text) {
                 Platform.copyText(text)
-                    .then(() => {
+                    .then((ok) => {
+                        if (!ok) throw new Error("Clipboard non disponibile");
                         showNotification(`Numero ${text} copiato negli appunti!`, "success");
                     })
                     .catch(() => {
