@@ -14731,7 +14731,10 @@ async function loadFromLocalStorage() {
     <h1 style="color:#2563eb; margin-bottom:10px;">TERMO MANAGER</h1>
     <h2 id="licenseBlockTitle" style="color:#dc2626;">APP BLOCCATA</h2>
     <p style="margin:20px; font-size:16px;">Inserisci il codice licenza fornito dall'amministratore.</p>
-    <h2 id="idDispositivoMostrato" style="display:none;">LICENZA NON ATTIVA</h2>
+    <p style="margin:12px 20px 6px; font-size:14px; color:#64748b;">Codice richiesta licenza:</p>
+    <input id="idDispositivoMostrato" readonly style="background:#f1f5f9; padding:12px 14px; border-radius:8px; display:inline-block; border: 2px dashed #64748b; letter-spacing: 1px; font-size:18px; font-weight:bold; text-align:center; width:260px; max-width:90%; color:#0f172a;" value="ATTENDERE...">
+    <br>
+    <button id="btnCopiaRichiestaLicenza" type="button" style="margin-top:10px; padding:9px 16px; background:#2563eb; color:white; border:none; border-radius:6px; font-size:14px; font-weight:bold; cursor:pointer;">COPIA CODICE RICHIESTA</button>
     <p id="licenseBlockMessage" style="margin:20px; color:#64748b;">La licenza non e legata all'ID del browser: se cancelli la cache puoi reinserire lo stesso codice.</p>
     <div style="margin-top:30px;">
         <input type="text" id="inputCodiceSblocco" placeholder="Inserisci chiave" style="padding:12px; font-size:16px; border:1px solid #ccc; border-radius:6px; width:200px; text-align:center; text-transform:uppercase;">
@@ -14750,7 +14753,24 @@ document.addEventListener('DOMContentLoaded', function() {
     var messageBox = document.getElementById('licenseBlockMessage');
     var input = document.getElementById('inputCodiceSblocco');
     var button = document.getElementById('btnSbloccaApp');
-    if (idBox) idBox.innerText = "LICENZA NON ATTIVA";
+    var copyRequestButton = document.getElementById('btnCopiaRichiestaLicenza');
+
+    function formatRequestCode(value) {
+        var clean = String(value || "").replace(/[^A-Z0-9]/gi, "").toUpperCase().slice(0, 16);
+        if (!clean) return "NON DISPONIBILE";
+        return clean.replace(/(.{4})/g, "$1-").replace(/-$/, "");
+    }
+
+    function getRequestCode() {
+        return formatRequestCode(pwa.getBrowserId ? pwa.getBrowserId() : "");
+    }
+
+    function setRequestCode() {
+        if (!idBox) return;
+        idBox.value = getRequestCode();
+    }
+
+    setRequestCode();
 
     function getStatus() {
         return typeof pwa.getLicenseStatus === "function" ? pwa.getLicenseStatus() : { remoteBlocked: false, message: "" };
@@ -14761,7 +14781,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var revoked = !!status.remoteBlocked;
         if (title) title.innerText = revoked ? "LICENZA REVOCATA" : "APP BLOCCATA";
         if (messageBox) {
-            messageBox.innerText = customMessage || status.message || "Inserisci il codice licenza fornito dall'amministratore.";
+            messageBox.innerText = customMessage || status.message || "La licenza non e legata all'ID del browser: se cancelli la cache puoi reinserire lo stesso codice.";
         }
         if (blocco) blocco.style.display = 'block';
     }
@@ -14771,7 +14791,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function refreshLicenseGate() {
-        if (idBox) idBox.innerText = pwa.getLicenseId ? (pwa.getLicenseId() || "LICENZA NON ATTIVA") : "LICENZA NON ATTIVA";
+        setRequestCode();
         if (!pwa.isLicenseValid()) {
             showLicenseBlock();
         } else {
@@ -14800,6 +14820,23 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener("keydown", function(event) {
             if (event.key === "Enter" && button) button.click();
         });
+    }
+    if (copyRequestButton) {
+        copyRequestButton.onclick = function() {
+            var requestCode = getRequestCode();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(requestCode).catch(function() {
+                    if (idBox) {
+                        idBox.focus();
+                        idBox.select();
+                    }
+                });
+            } else if (idBox) {
+                idBox.focus();
+                idBox.select();
+                document.execCommand("copy");
+            }
+        };
     }
 
     window.addEventListener("termo-license-revoked", function(event) {
