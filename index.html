@@ -6859,11 +6859,13 @@ body:has(#calendarSection[style*="display: block"]) .content {
                                 <p><strong>Offline:</strong> <span id="pwaServiceWorkerStatus">Verifica...</span></p>
                                 <p><strong>Memoria protetta:</strong> <span id="pwaStorageStatus">Verifica...</span></p>
                                 <p><strong>ID licenza:</strong> <span id="pwaBrowserId" style="font-family: monospace; overflow-wrap: anywhere;">Verifica...</span></p>
+                                <p><strong>Licenza remota:</strong> <span id="pwaLicenseRemoteStatus">Verifica...</span></p>
                             </div>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
                                 <button class="btn btn-primary" id="pwaInstallBtn" type="button"><i class="fas fa-download"></i> Installa App</button>
                                 <button class="btn btn-secondary" id="pwaPersistStorageBtn" type="button"><i class="fas fa-database"></i> Proteggi Memoria</button>
                                 <button class="btn btn-outline" id="pwaCopyIdBtn" type="button"><i class="fas fa-copy"></i> Copia ID</button>
+                                <button class="btn btn-outline" id="pwaCheckLicenseBtn" type="button"><i class="fas fa-check-circle"></i> Verifica Licenza</button>
                             </div>
                         </div>
                         <!-- ===== NUOVA SEZIONE SALVATAGGIO ESTERNO AUTOMATICO ===== -->
@@ -7288,11 +7290,16 @@ body:has(#calendarSection[style*="display: block"]) .content {
         <script>
             (function () {
                 const LICENSE_SALT = "TERMOMANAGER-PWA-2026-LNC";
+                const REMOTE_LICENSE_URL = "./licenses.json";
+                const REMOTE_LICENSE_STATE_KEY = "termo_app_remote_license_state";
+                const LICENSE_REVOKED_KEY = "termo_app_license_revoked_message";
+                const REMOTE_LICENSE_CHECK_INTERVAL_MS = 60 * 60 * 1000;
                 const DB_NAME = "TermoManagerDB";
                 const SNAPSHOT_ID = "main";
                 let db = null;
                 let saveQueue = Promise.resolve();
                 let deferredInstallPrompt = null;
+                let remoteLicenseTimer = null;
 
                 function hasDexie() {
                     return typeof window.Dexie === "function";
@@ -7384,13 +7391,110 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     return (hash >>> 0).toString(36).toUpperCase().padStart(7, "0").slice(-7);
                 }
 
+                function normalizeLicenseId(value) {
+                    return String(value || "").replace(/[^A-Z0-9]/gi, "").toUpperCase();
+                }
+
                 function buildLicenseKey(id) {
-                    const cleanId = String(id || "").replace(/[^A-Z0-9]/gi, "").toUpperCase();
+                    const cleanId = normalizeLicenseId(id);
                     return "LNC-" + deterministicHash(cleanId + LICENSE_SALT) + "-" + cleanId.slice(-4);
+                }
+
+                function normalizeLicenseList(value) {
+                    if (!Array.isArray(value)) return [];
+                    return value.map(normalizeLicenseId).filter(Boolean);
+                }
+
+                function normalizeKeyList(value) {
+                    if (!Array.isArray(value)) return [];
+                    return value.map(function (item) {
+                        return String(item || "").trim().toUpperCase();
+                    }).filter(Boolean);
+                }
+
+                function normalizeRemoteLicenseState(data) {
+                    const source = data && typeof data === "object" ? data : {};
+                    const revokedIds = normalizeLicenseList(source.revokedIds || source.revoked || []);
+                    const blockedIds = normalizeLicenseList(source.blockedIds || source.blocked || []);
+                    return {
+                        version: source.version || 1,
+                        updatedAt: String(source.updatedAt || ""),
+                        checkedAt: new Date().toISOString(),
+                        message: String(source.message || source.revokedMessage || "Licenza revocata da remoto. Contatta l'amministratore."),
+                        disabled: source.disabled === true,
+                        allowedIds: normalizeLicenseList(source.allowedIds || source.licensedIds || source.activeIds || []),
+                        revokedIds: revokedIds.concat(blockedIds),
+                        revokedKeys: normalizeKeyList(source.revokedKeys || []),
+                    };
+                }
+
+                function getStoredRemoteLicenseState() {
+                    try {
+                        const raw = localStorage.getItem(REMOTE_LICENSE_STATE_KEY);
+                        if (!raw) return null;
+                        const state = JSON.parse(raw);
+                        return state && typeof state === "object" ? state : null;
+                    } catch (error) {
+                        return null;
+                    }
+                }
+
+                function saveRemoteLicenseState(state) {
+                    try {
+                        localStorage.setItem(REMOTE_LICENSE_STATE_KEY, JSON.stringify(state));
+                    } catch (error) {
+                        console.warn("Stato licenza remota non salvato:", error);
+                    }
+                }
+
+                function isLicenseBlockedByState(id, key, state) {
+                    if (!state) return false;
+                    const cleanId = normalizeLicenseId(id);
+                    const cleanKey = String(key || "").trim().toUpperCase();
+                    const revokedIds = normalizeLicenseList(state.revokedIds || []);
+                    const revokedKeys = normalizeKeyList(state.revokedKeys || []);
+                    const allowedIds = normalizeLicenseList(state.allowedIds || []);
+                    if (state.disabled === true) return true;
+                    if (revokedIds.indexOf(cleanId) !== -1) return true;
+                    if (cleanKey && revokedKeys.indexOf(cleanKey) !== -1) return true;
+                    if (allowedIds.length > 0 && allowedIds.indexOf(cleanId) === -1) return true;
+                    return false;
+                }
+
+                function getCurrentLicenseKey() {
+                    return localStorage.getItem("termo_app_license_key") || "";
+                }
+
+                function getRevokedMessage() {
+                    const state = getStoredRemoteLicenseState();
+                    return localStorage.getItem(LICENSE_REVOKED_KEY) ||
+                        (state && state.message) ||
+                        "Licenza revocata da remoto. Contatta l'amministratore.";
+                }
+
+                function isCurrentLicenseRemotelyBlocked() {
+                    const id = getBrowserId();
+                    const key = getCurrentLicenseKey() || buildLicenseKey(id);
+                    return isLicenseBlockedByState(id, key, getStoredRemoteLicenseState());
+                }
+
+                function markLicenseRevoked(message) {
+                    const text = message || getRevokedMessage();
+                    localStorage.setItem("termo_app_licenza", "REVOCATA");
+                    localStorage.setItem(LICENSE_REVOKED_KEY, text);
+                    window.dispatchEvent(new CustomEvent("termo-license-revoked", { detail: { message: text } }));
+                }
+
+                function clearLicenseRevokedState() {
+                    if (localStorage.getItem("termo_app_licenza") === "REVOCATA") {
+                        localStorage.removeItem("termo_app_licenza");
+                    }
+                    localStorage.removeItem(LICENSE_REVOKED_KEY);
                 }
 
                 function isLicenseValid() {
                     const id = getBrowserId();
+                    if (isCurrentLicenseRemotelyBlocked()) return false;
                     return localStorage.getItem("termo_app_licenza") === "VALIDA" &&
                         localStorage.getItem("termo_app_license_key") === buildLicenseKey(id);
                 }
@@ -7400,11 +7504,92 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     const normalized = String(key || "").trim().toUpperCase();
                     const expected = buildLicenseKey(id);
                     if (normalized === expected) {
+                        if (isLicenseBlockedByState(id, expected, getStoredRemoteLicenseState())) {
+                            markLicenseRevoked(getRevokedMessage());
+                            return false;
+                        }
+                        clearLicenseRevokedState();
                         localStorage.setItem("termo_app_licenza", "VALIDA");
                         localStorage.setItem("termo_app_license_key", expected);
                         return true;
                     }
                     return false;
+                }
+
+                async function checkRemoteLicense(options) {
+                    const config = options || {};
+                    const id = getBrowserId();
+                    const expectedKey = buildLicenseKey(id);
+                    const currentKey = getCurrentLicenseKey() || expectedKey;
+                    if (navigator.onLine === false) {
+                        return { checked: false, offline: true, revoked: isCurrentLicenseRemotelyBlocked(), message: getRevokedMessage() };
+                    }
+                    try {
+                        const separator = REMOTE_LICENSE_URL.indexOf("?") === -1 ? "?" : "&";
+                        const response = await fetch(REMOTE_LICENSE_URL + separator + "ts=" + Date.now(), {
+                            cache: "no-store",
+                            credentials: "same-origin",
+                        });
+                        if (!response.ok) {
+                            return { checked: false, missing: response.status === 404, revoked: isCurrentLicenseRemotelyBlocked(), status: response.status };
+                        }
+                        const data = await response.json();
+                        const state = normalizeRemoteLicenseState(data);
+                        saveRemoteLicenseState(state);
+                        const blocked = isLicenseBlockedByState(id, currentKey, state);
+                        if (blocked) {
+                            markLicenseRevoked(state.message);
+                        } else {
+                            localStorage.removeItem(LICENSE_REVOKED_KEY);
+                            if (getCurrentLicenseKey() === expectedKey && localStorage.getItem("termo_app_licenza") === "REVOCATA") {
+                                localStorage.setItem("termo_app_licenza", "VALIDA");
+                            }
+                            window.dispatchEvent(new CustomEvent("termo-license-checked", { detail: { revoked: false, state: state } }));
+                        }
+                        return { checked: true, revoked: blocked, state: state, message: state.message };
+                    } catch (error) {
+                        if (!config.silent) console.warn("Controllo licenza remota non disponibile:", error);
+                        return { checked: false, error: true, revoked: isCurrentLicenseRemotelyBlocked(), message: getRevokedMessage() };
+                    }
+                }
+
+                function getLicenseStatus() {
+                    const id = getBrowserId();
+                    const key = getCurrentLicenseKey();
+                    const state = getStoredRemoteLicenseState();
+                    const remoteBlocked = isLicenseBlockedByState(id, key || buildLicenseKey(id), state);
+                    const valid = !remoteBlocked &&
+                        localStorage.getItem("termo_app_licenza") === "VALIDA" &&
+                        key === buildLicenseKey(id);
+                    let label = "Non verificata";
+                    if (remoteBlocked) {
+                        label = "Revocata";
+                    } else if (state && state.checkedAt) {
+                        label = "OK remoto " + new Date(state.checkedAt).toLocaleString("it-IT");
+                    } else if (navigator.onLine === false) {
+                        label = "Offline, ultimo stato locale";
+                    }
+                    return {
+                        id: id,
+                        valid: valid,
+                        remoteBlocked: remoteBlocked,
+                        checkedAt: state ? state.checkedAt : "",
+                        label: label,
+                        message: remoteBlocked ? getRevokedMessage() : "",
+                    };
+                }
+
+                function startRemoteLicenseChecks() {
+                    if (remoteLicenseTimer) return;
+                    window.addEventListener("online", function () {
+                        checkRemoteLicense({ silent: true });
+                    });
+                    setTimeout(function () {
+                        checkRemoteLicense({ silent: true });
+                    }, 1500);
+                    remoteLicenseTimer = setInterval(function () {
+                        checkRemoteLicense({ silent: true });
+                    }, REMOTE_LICENSE_CHECK_INTERVAL_MS);
                 }
 
                 function registerServiceWorker() {
@@ -7481,6 +7666,8 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     buildLicenseKey,
                     isLicenseValid,
                     validateLicenseKey,
+                    checkRemoteLicense,
+                    getLicenseStatus,
                     isStandalone,
                     canInstall,
                     installApp,
@@ -7489,6 +7676,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
 
                 persistStorage();
                 registerServiceWorker();
+                startRemoteLicenseChecks();
             })();
 
             // ===== APP TERMOMANAGER VERSIONE STANDALONE =====
@@ -11053,10 +11241,12 @@ async function deleteIntervention(interventionId) {
                 const browserId = pwa.getBrowserId();
                 const persisted = await pwa.isStoragePersisted();
                 const swState = await pwa.getServiceWorkerState();
+                const licenseStatus = typeof pwa.getLicenseStatus === "function" ? pwa.getLicenseStatus() : null;
                 setPwaText("pwaDisplayMode", standalone ? "Installata a schermo intero" : "Browser / GitHub Pages");
                 setPwaText("pwaServiceWorkerStatus", swState + (online ? " / online" : " / offline"));
                 setPwaText("pwaStorageStatus", persisted ? "Persistente" : "Da proteggere");
                 setPwaText("pwaBrowserId", browserId);
+                setPwaText("pwaLicenseRemoteStatus", licenseStatus ? licenseStatus.label : "Non verificata");
                 const installBtn = document.getElementById("pwaInstallBtn");
                 if (installBtn) {
                     const installable = pwa.canInstall();
@@ -11075,12 +11265,17 @@ async function deleteIntervention(interventionId) {
                 }
                 const statusBox = document.getElementById("pwaStatusBox");
                 if (statusBox) {
-                    statusBox.style.backgroundColor = persisted && (swState === "attivo" || swState === "in attesa") ? "#f0fdf4" : "#eff6ff";
-                    statusBox.style.borderLeftColor = persisted && (swState === "attivo" || swState === "in attesa") ? "#10b981" : "#2563eb";
+                    if (licenseStatus && licenseStatus.remoteBlocked) {
+                        statusBox.style.backgroundColor = "#fef2f2";
+                        statusBox.style.borderLeftColor = "#ef4444";
+                    } else {
+                        statusBox.style.backgroundColor = persisted && (swState === "attivo" || swState === "in attesa") ? "#f0fdf4" : "#eff6ff";
+                        statusBox.style.borderLeftColor = persisted && (swState === "attivo" || swState === "in attesa") ? "#10b981" : "#2563eb";
+                    }
                     if (window.TermoManagerOfflineIcons) window.TermoManagerOfflineIcons.hydrate(statusBox);
                 }
                 if (window.TermoManagerOfflineIcons) {
-                    ["pwaInstallBtn", "pwaPersistStorageBtn", "pwaCopyIdBtn"].forEach(function (id) {
+                    ["pwaInstallBtn", "pwaPersistStorageBtn", "pwaCopyIdBtn", "pwaCheckLicenseBtn"].forEach(function (id) {
                         const el = document.getElementById(id);
                         if (el) window.TermoManagerOfflineIcons.hydrate(el);
                     });
@@ -11123,10 +11318,29 @@ async function deleteIntervention(interventionId) {
                     });
             }
 
+            async function verifyPwaRemoteLicense() {
+                const pwa = window.TermoManagerPWA;
+                if (!pwa || typeof pwa.checkRemoteLicense !== "function") return;
+                const result = await pwa.checkRemoteLicense({ silent: false });
+                await updatePwaSettingsUi();
+                if (result.revoked) {
+                    showNotification(result.message || "Licenza revocata da remoto.", "danger");
+                } else if (result.checked) {
+                    showNotification("Licenza remota verificata.", "success");
+                } else if (result.offline) {
+                    showNotification("Controllo remoto non disponibile offline.", "warning");
+                } else if (result.missing) {
+                    showNotification("File licenses.json non trovato su GitHub Pages.", "warning");
+                } else {
+                    showNotification("Controllo remoto non disponibile.", "warning");
+                }
+            }
+
             function setupPwaSettingsControls() {
                 const installBtn = document.getElementById("pwaInstallBtn");
                 const persistBtn = document.getElementById("pwaPersistStorageBtn");
                 const copyIdBtn = document.getElementById("pwaCopyIdBtn");
+                const checkLicenseBtn = document.getElementById("pwaCheckLicenseBtn");
                 if (installBtn && installBtn.getAttribute("data-pwa-ready") !== "true") {
                     installBtn.setAttribute("data-pwa-ready", "true");
                     installBtn.addEventListener("click", installPwaFromSettings);
@@ -11139,9 +11353,15 @@ async function deleteIntervention(interventionId) {
                     copyIdBtn.setAttribute("data-pwa-ready", "true");
                     copyIdBtn.addEventListener("click", copyPwaBrowserId);
                 }
+                if (checkLicenseBtn && checkLicenseBtn.getAttribute("data-pwa-ready") !== "true") {
+                    checkLicenseBtn.setAttribute("data-pwa-ready", "true");
+                    checkLicenseBtn.addEventListener("click", verifyPwaRemoteLicense);
+                }
                 window.addEventListener("online", updatePwaSettingsUi);
                 window.addEventListener("offline", updatePwaSettingsUi);
                 window.addEventListener("termo-pwa-status-change", updatePwaSettingsUi);
+                window.addEventListener("termo-license-revoked", updatePwaSettingsUi);
+                window.addEventListener("termo-license-checked", updatePwaSettingsUi);
                 updatePwaSettingsUi();
             }
 
@@ -14418,10 +14638,10 @@ async function loadFromLocalStorage() {
 <!-- SCHERMATA BLOCCO CAPACITOR -->
 <div id="schermataBlocco" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:999999; text-align:center; padding-top:10vh; font-family:sans-serif;">
     <h1 style="color:#2563eb; margin-bottom:10px;">TERMO MANAGER</h1>
-    <h2 style="color:#dc2626;">APP BLOCCATA</h2>
+    <h2 id="licenseBlockTitle" style="color:#dc2626;">APP BLOCCATA</h2>
     <p style="margin:20px; font-size:16px;">Il codice del tuo dispositivo è:</p>
     <h2 id="idDispositivoMostrato" style="background:#f1f5f9; padding:15px; border-radius:8px; display:inline-block; border: 2px dashed #64748b; letter-spacing: 2px;">ATTENDERE...</h2>
-    <p style="margin:20px; color:#64748b;">Invia questo codice all'amministratore per ricevere la chiave di sblocco.</p>
+    <p id="licenseBlockMessage" style="margin:20px; color:#64748b;">Invia questo codice all'amministratore per ricevere la chiave di sblocco.</p>
     <div style="margin-top:30px;">
         <input type="text" id="inputCodiceSblocco" placeholder="Inserisci chiave" style="padding:12px; font-size:16px; border:1px solid #ccc; border-radius:6px; width:200px; text-align:center; text-transform:uppercase;">
         <br><br>
@@ -14435,29 +14655,75 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!pwa) return;
     var blocco = document.getElementById('schermataBlocco');
     var idBox = document.getElementById('idDispositivoMostrato');
+    var title = document.getElementById('licenseBlockTitle');
+    var messageBox = document.getElementById('licenseBlockMessage');
     var input = document.getElementById('inputCodiceSblocco');
     var button = document.getElementById('btnSbloccaApp');
     var browserId = pwa.getBrowserId();
     if (idBox) idBox.innerText = browserId;
-    if (!pwa.isLicenseValid()) {
+
+    function getStatus() {
+        return typeof pwa.getLicenseStatus === "function" ? pwa.getLicenseStatus() : { remoteBlocked: false, message: "" };
+    }
+
+    function showLicenseBlock(customMessage) {
+        var status = getStatus();
+        var revoked = !!status.remoteBlocked;
+        if (title) title.innerText = revoked ? "LICENZA REVOCATA" : "APP BLOCCATA";
+        if (messageBox) {
+            messageBox.innerText = customMessage || status.message || "Invia questo codice all'amministratore per ricevere la chiave di sblocco.";
+        }
         if (blocco) blocco.style.display = 'block';
-        if (button) {
-            button.onclick = function() {
-                var key = input ? input.value : "";
-                if (pwa.validateLicenseKey(key)) {
-                    if (blocco) blocco.style.display = 'none';
-                } else {
-                    alert("Chiave errata. Riprova.");
+    }
+
+    function hideLicenseBlock() {
+        if (blocco) blocco.style.display = 'none';
+    }
+
+    function refreshLicenseGate() {
+        browserId = pwa.getBrowserId();
+        if (idBox) idBox.innerText = browserId;
+        if (!pwa.isLicenseValid()) {
+            showLicenseBlock();
+        } else {
+            hideLicenseBlock();
+        }
+    }
+
+    if (button) {
+        button.onclick = function() {
+            var key = input ? input.value : "";
+            if (pwa.validateLicenseKey(key)) {
+                hideLicenseBlock();
+                if (typeof pwa.checkRemoteLicense === "function") {
+                    pwa.checkRemoteLicense({ silent: true }).then(function(result) {
+                        if (result && result.revoked) showLicenseBlock(result.message);
+                    });
                 }
-            };
-        }
-        if (input) {
-            input.addEventListener("keydown", function(event) {
-                if (event.key === "Enter" && button) button.click();
-            });
-        }
-    } else if (blocco) {
-        blocco.style.display = 'none';
+            } else {
+                var status = getStatus();
+                alert(status.remoteBlocked ? (status.message || "Licenza revocata da remoto.") : "Chiave errata. Riprova.");
+                refreshLicenseGate();
+            }
+        };
+    }
+    if (input) {
+        input.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && button) button.click();
+        });
+    }
+
+    window.addEventListener("termo-license-revoked", function(event) {
+        showLicenseBlock(event.detail && event.detail.message);
+    });
+    window.addEventListener("termo-license-checked", refreshLicenseGate);
+
+    refreshLicenseGate();
+    if (typeof pwa.checkRemoteLicense === "function") {
+        pwa.checkRemoteLicense({ silent: true }).then(function(result) {
+            if (result && result.revoked) showLicenseBlock(result.message);
+            else refreshLicenseGate();
+        });
     }
 });
 </script>
