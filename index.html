@@ -4331,8 +4331,8 @@ body:has(#calendarSection[style*="display: block"]) .content {
             html.tm-layout-phone.tm-fit-scale-active #clientsTable td:nth-child(3),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(5),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(5),
-            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(6),
-            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(6),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(4),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(7),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(7) {
                 display: none !important;
@@ -5023,11 +5023,11 @@ body:has(#calendarSection[style*="display: block"]) .content {
             html.tm-layout-phone.tm-fit-scale-active #interventionsTable td:nth-child(6)::before { content: "Azioni"; }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(2)::before { content: "Ora"; }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(3)::before { content: "Cliente"; }
-            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4)::before { content: "Tipo"; }
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(6)::before { content: "Tipo"; }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(5)::before { content: "Indirizzo"; }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(7)::before { content: "Note"; }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(8)::before { content: "Stato"; }
-            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(6) {
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4) {
                 display: none !important;
             }
             html.tm-layout-phone.tm-fit-scale-active #clientsTable td:nth-child(6),
@@ -6807,9 +6807,9 @@ body:has(#calendarSection[style*="display: block"]) .content {
                                         <th>Data</th>
                                         <th>Ora</th>
                                         <th>Cliente</th>
-                                        <th>Tipo</th>
-                                        <th>Indirizzo</th>
                                         <th>Telefono</th>
+                                        <th>Indirizzo</th>
+                                        <th>Tipo</th>
                                         <th>Note</th>
                                         <th>Stato</th>
                                     </thead>
@@ -9217,24 +9217,34 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     }
                 }
             }
-            function renderAgendaListView() {
+            function resetAgendaSearch(shouldRenderList = false) {
                 const searchAgenda = document.getElementById("search-agenda");
                 if (searchAgenda) {
                     searchAgenda.value = "";
                 }
+                if (shouldRenderList && agendaView === "list") {
+                    renderAgendaListView();
+                }
+            }
+            function renderAgendaListView() {
+                const searchAgenda = document.getElementById("search-agenda");
                 const tbody = document.getElementById("agendaTableBody");
                 const noData = document.getElementById("noAgendaData");
                 if (!tbody) return;
                 tbody.innerHTML = "";
                 if (noData) noData.style.display = "none";
-                const filteredInterventions = interventions
-                    .filter((intervention) => !intervention.completed)
-                    .sort((a, b) => {
-                        if (a.date === b.date) {
-                            return (a.time || "00:00").localeCompare(b.time || "00:00");
-                        }
-                        return a.date.localeCompare(b.date);
-                    });
+                const query = searchAgenda ? searchAgenda.value.toLowerCase().trim() : "";
+                let filteredInterventions = interventions
+                    .filter((intervention) => !intervention.completed);
+                if (query.length >= 1) {
+                    filteredInterventions = filteredInterventions.filter((intervention) => interventionMatchesSearch(intervention, query));
+                }
+                filteredInterventions.sort((a, b) => {
+                    if (a.date === b.date) {
+                        return (a.time || "00:00").localeCompare(b.time || "00:00");
+                    }
+                    return a.date.localeCompare(b.date);
+                });
                 if (filteredInterventions.length === 0) {
                     if (noData) noData.style.display = "block";
                     return;
@@ -9256,10 +9266,10 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     }
                     row.innerHTML = `<td class="agenda-date-cell" data-date="${intervention.date}" style="font-weight: 600; cursor: pointer;">${formatDate(intervention.date)}</td>
                                    <td>${escapeHTML(intervention.time || "--:--")}</td>
-                                   <td><div style="font-weight: 600;">${escapeHTML(client.name)} ${escapeHTML(client.surname)}</div><div style="font-size: 0.85rem; color: var(--gray);">${escapeHTML(client.phone)}</div></td>
-                                   <td><span class="badge" style="background-color: #dbeafe; color: #1e40af;">${escapeHTML(getInterventionTypeLabel(intervention.type))}</span></td>
-                            <td style="word-break: break-word; overflow-wrap: break-word; white-space: normal;">${escapeHTML(client.address || "-")}</td>
+                                   <td><div style="font-weight: 600;">${escapeHTML(client.name)} ${escapeHTML(client.surname)}</div></td>
                                    <td>${escapeHTML(client.phone)}</td>
+                            <td style="word-break: break-word; overflow-wrap: break-word; white-space: normal;">${escapeHTML(client.address || "-")}</td>
+                                   <td><span class="badge" style="background-color: #dbeafe; color: #1e40af;">${escapeHTML(getInterventionTypeLabel(intervention.type))}</span></td>
                                    <td>${escapeHTML(intervention.notes || "-").substring(0, 30)}${intervention.notes && intervention.notes.length > 30 ? "..." : ""}</td>
                                    <td><span class="badge ${statusClass}">${escapeHTML(statusText)}</span></td>`;
                     tbody.appendChild(row);
@@ -9325,6 +9335,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
                         agendaToday,
                         "click",
                         () => {
+                            resetAgendaSearch();
                             agendaCurrentDate = new Date();
                             agendaView = "day";
                             renderAgenda();
@@ -9337,6 +9348,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
                         btn,
                         "click",
                         function () {
+                            resetAgendaSearch();
                             document.querySelectorAll(".view-btn").forEach((b) => {
                                 b.classList.remove("active");
                             });
@@ -9349,6 +9361,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
                 });
             }
             function navigateAgenda(direction) {
+                resetAgendaSearch();
                 switch (agendaView) {
                     case "day":
                         agendaCurrentDate.setDate(agendaCurrentDate.getDate() + direction);
@@ -9422,18 +9435,34 @@ body:has(#calendarSection[style*="display: block"]) .content {
                 }, 300);
             }
             function printClientList() {
-    if (clients.length === 0) {
-        showNotification("Nessun cliente da stampare", "warning");
-        return;
-    }
-    const sortedClients = [...clients].sort((a, b) => {
-        const surnameA = (a.surname || "").toLowerCase();
-        const surnameB = (b.surname || "").toLowerCase();
-        if (surnameA !== surnameB) return surnameA.localeCompare(surnameB);
-        const nameA = (a.name || "").toLowerCase();
-        const nameB = (b.name || "").toLowerCase();
-        return nameA.localeCompare(nameB);
-    });
+                if (clients.length === 0) {
+                    showNotification("Nessun cliente da stampare", "warning");
+                    return;
+                }
+                
+                let targetClients = [...clients];
+                const searchInput = document.getElementById("search-client");
+                if (searchInput && searchInput.value) {
+                    const query = searchInput.value.toLowerCase().trim();
+                    if (query.length >= 1) {
+                        targetClients = targetClients.filter(c => {
+                            const fullName = `${c.name || ""} ${c.surname || ""}`.toLowerCase();
+                            const reverseFullName = `${c.surname || ""} ${c.name || ""}`.toLowerCase();
+                            return [c.name || "", c.surname || "", c.phone || "", c.address || ""].some(
+                                (field) => field.toLowerCase().includes(query)
+                            ) || fullName.includes(query) || reverseFullName.includes(query);
+                        });
+                    }
+                }
+                
+                const sortedClients = targetClients.sort((a, b) => {
+                    const surnameA = (a.surname || "").toLowerCase();
+                    const surnameB = (b.surname || "").toLowerCase();
+                    if (surnameA !== surnameB) return surnameA.localeCompare(surnameB);
+                    const nameA = (a.name || "").toLowerCase();
+                    const nameB = (b.name || "").toLowerCase();
+                    return nameA.localeCompare(nameB);
+                });
     let rows = "";
     sortedClients.forEach((client) => {
         const interventiCount = interventions.filter((i) => i.clientId === client.id).length;
@@ -9581,10 +9610,24 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     printArea.innerHTML = htmlContent;
                     printWithMode("printing-client-sheet");
                 }
+                
+                // Reset search after printing client sheet in fallback
+                const searchInput = document.getElementById("search-client");
+                if (searchInput && searchInput.value !== "") {
+                    searchInput.value = "";
+                    loadClients();
+                }
             }
             function printClientSheetById(clientId) {
                 currentClientId = clientId;
                 printClientSheet();
+                
+                // Reset search after printing client sheet in fallback
+                const searchInput = document.getElementById("search-client");
+                if (searchInput && searchInput.value !== "") {
+                    searchInput.value = "";
+                    loadClients();
+                }
             }
             function printCurrentIntervention() {
                 if (currentInterventionId) {
@@ -10682,43 +10725,104 @@ async function deleteIntervention(interventionId) {
                         loadInterventions();
                     });
             }
+            function interventionMatchesSearch(intervention, query) {
+                query = query.toLowerCase().trim();
+                const client = clients.find((c) => c.id === intervention.clientId);
+                if (!client) return false;
+                const fullName = `${client.name || ""} ${client.surname || ""}`.toLowerCase();
+                const reverseFullName = `${client.surname || ""} ${client.name || ""}`.toLowerCase();
+                const clientSearch =
+                    [client.name || "", client.surname || "", client.phone || "", client.address || ""].some(
+                        (field) => field.toLowerCase().includes(query)
+                    ) ||
+                    fullName.includes(query) ||
+                    reverseFullName.includes(query);
+                if (clientSearch) return true;
+                if (intervention.notes && intervention.notes.toLowerCase().includes(query)) {
+                    return true;
+                }
+                const typeLabel = getInterventionTypeLabel(intervention.type);
+                if (typeLabel.toLowerCase().includes(query)) {
+                    return true;
+                }
+                const interventionDate = parseLocalDate(intervention.date);
+                if (!isNaN(interventionDate.getTime())) {
+                    const formattedDate = interventionDate.toLocaleDateString("it-IT");
+                    if (formattedDate.toLowerCase().includes(query)) {
+                        return true;
+                    }
+                    if (intervention.date && intervention.date.toLowerCase().includes(query)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             function performInterventionSearch(query) {
                 query = query.toLowerCase().trim();
                 if (query.length < 1) {
                     loadInterventions();
                     return;
                 }
-                const filteredInterventions = interventions.filter((intervention) => {
-                    const client = clients.find((c) => c.id === intervention.clientId);
-                    if (!client) return false;
-                    const fullName = `${client.name || ""} ${client.surname || ""}`.toLowerCase();
-                    const reverseFullName = `${client.surname || ""} ${client.name || ""}`.toLowerCase();
-                    const clientSearch =
-                        [client.name || "", client.surname || "", client.phone || "", client.address || ""].some(
-                            (field) => field.toLowerCase().includes(query)
-                        ) ||
-                        fullName.includes(query) ||
-                        reverseFullName.includes(query);
-                    if (clientSearch) return true;
-                    if (intervention.notes && intervention.notes.toLowerCase().includes(query)) {
-                        return true;
-                    }
-                    const typeLabel = getInterventionTypeLabel(intervention.type);
-                    if (typeLabel.toLowerCase().includes(query)) {
-                        return true;
-                    }
-                    const interventionDate = parseLocalDate(intervention.date);
-                    if (!isNaN(interventionDate.getTime())) {
-                        const formattedDate = interventionDate.toLocaleDateString("it-IT");
-                        if (formattedDate.toLowerCase().includes(query)) {
-                            return true;
-                        }
-                        if (intervention.date.toLowerCase().includes(query)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
+                
+                // Filtra prima per la categoria attiva (currentFilter)
+                let tempInterventions = [...interventions];
+                const filter = currentFilter;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (filter === "urgent") {
+                    const daysBefore = getCachedDaysBeforeNotify();
+                    tempInterventions = interventions.filter((intervention) => {
+                        if (intervention.completed) return false;
+                        if (!intervention.date) return false;
+                        const interventionDate = parseLocalDate(intervention.date);
+                        if (isNaN(interventionDate.getTime())) return false;
+                        const diffDays = Math.round((interventionDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                        return diffDays >= 0 && diffDays <= daysBefore;
+                    });
+                } else if (filter === "week") {
+                    const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    tempInterventions = interventions.filter((i) => {
+                        if (i.completed) return false;
+                        if (!i.date) return false;
+                        const d = parseLocalDate(i.date);
+                        if (isNaN(d.getTime())) return false;
+                        return d >= today && d <= nextWeek;
+                    });
+                } else if (filter === "next15") {
+                    const in15Days = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
+                    in15Days.setHours(23, 59, 59, 999);
+                    tempInterventions = interventions.filter((i) => {
+                        if (i.completed) return false;
+                        if (!i.date) return false;
+                        const d = parseLocalDate(i.date);
+                        if (isNaN(d.getTime())) return false;
+                        return d > today && d <= in15Days;
+                    });
+                } else if (filter === "future") {
+                    tempInterventions = interventions.filter((i) => {
+                        if (i.completed) return false;
+                        if (!i.date) return false;
+                        const interventionDate = parseLocalDate(i.date);
+                        if (isNaN(interventionDate.getTime())) return false;
+                        const diffDays = Math.round((interventionDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                        return diffDays > 15;
+                    });
+                } else if (filter === "expired") {
+                    tempInterventions = interventions.filter((i) => {
+                        if (i.completed) return false;
+                        if (!i.date) return false;
+                        const interventionDate = parseLocalDate(i.date);
+                        if (isNaN(interventionDate.getTime())) return false;
+                        return interventionDate < today;
+                    });
+                } else if (filter === "completed") {
+                    tempInterventions = interventions.filter((i) => i.completed === true);
+                }
+
+                // Applica poi la query di ricerca sui risultati filtrati per categoria
+                const filteredInterventions = tempInterventions.filter(i => interventionMatchesSearch(i, query));
                 renderFilteredInterventions(filteredInterventions);
             }
             function renderFilteredInterventions(filteredInterventions) {
@@ -12102,6 +12206,7 @@ async function loadFromLocalStorage() {
                 }
             }
             function showSection(section) {
+    const previousSection = currentSection;
     if (section && section !== currentSection && !isNavigatingSectionBack) {
         sectionHistory.push(currentSection);
         if (sectionHistory.length > 25) sectionHistory.shift();
@@ -12145,6 +12250,9 @@ async function loadFromLocalStorage() {
     if (section === "agenda") {
         showAgendaSection();
     }
+    if (previousSection === "agenda" && section !== "agenda" && typeof resetAgendaSearch === "function") {
+        resetAgendaSearch();
+    }
     if (typeof forceResponsiveLayoutPass === "function") {
         window.setTimeout(forceResponsiveLayoutPass, 0);
         window.setTimeout(forceResponsiveLayoutPass, 180);
@@ -12182,6 +12290,10 @@ async function loadFromLocalStorage() {
                 }
             }
             function setFilter(filter) {
+                const searchInput = document.getElementById("search-intervention");
+                if (searchInput) {
+                    searchInput.value = "";
+                }
                 currentFilter = filter;
                 document.querySelectorAll(".filter-btn").forEach((btn) => {
                     btn.classList.toggle("active", btn.getAttribute("data-filter") === filter);
@@ -12817,6 +12929,15 @@ async function loadFromLocalStorage() {
         filtered = interventions.filter((i) => !i.completed);
     }
 
+    // Applica il filtro di ricerca testuale (se presente)
+    const searchAgenda = document.getElementById("search-agenda");
+    if (searchAgenda && searchAgenda.value) {
+        const query = searchAgenda.value.toLowerCase().trim();
+        if (query.length >= 1) {
+            filtered = filtered.filter(i => interventionMatchesSearch(i, query));
+        }
+    }
+
     filtered.sort((a, b) => {
         if (a.date === b.date) return (a.time || "00:00").localeCompare(b.time || "00:00");
         return a.date.localeCompare(b.date);
@@ -13087,10 +13208,10 @@ async function loadFromLocalStorage() {
                     }
                     row.innerHTML = `<td class="agenda-date-cell" data-date="${intervention.date}" style="font-weight: 600; cursor: pointer;">${formatDate(intervention.date)}</td>
                                   <td>${escapeHTML(intervention.time || "--:--")}</td>
-                                  <td><div style="font-weight: 600;">${escapeHTML(client.name)} ${escapeHTML(client.surname)}</div><div style="font-size: 0.85rem; color: var(--gray);">${escapeHTML(client.phone)}</div></td>
-                                  <td><span class="badge" style="background-color: #dbeafe; color: #1e40af;">${escapeHTML(getInterventionTypeLabel(intervention.type))}</span></td>
-                            <td style="word-break: break-word; overflow-wrap: break-word; white-space: normal;">${escapeHTML(client.address || "-")}</td>
+                                  <td><div style="font-weight: 600;">${escapeHTML(client.name)} ${escapeHTML(client.surname)}</div></td>
                                   <td>${escapeHTML(client.phone)}</td>
+                            <td style="word-break: break-word; overflow-wrap: break-word; white-space: normal;">${escapeHTML(client.address || "-")}</td>
+                                  <td><span class="badge" style="background-color: #dbeafe; color: #1e40af;">${escapeHTML(getInterventionTypeLabel(intervention.type))}</span></td>
                                   <td>${escapeHTML(intervention.notes || "-").substring(0, 30)}${intervention.notes && intervention.notes.length > 30 ? "..." : ""}</td>
                                   <td><span class="badge ${statusClass}">${escapeHTML(statusText)}</span></td>`;
                     tbody.appendChild(row);
@@ -13617,7 +13738,89 @@ async function loadFromLocalStorage() {
                         }
                     });
                 }
+
+                // ==========================================
+                // AGGIUNTA: Reset ricerca Interventi (Filtri, Cambio Sezione)
+                // ==========================================
+                
+                // 1. Reset al click sui pulsanti filtro degli interventi
+                const interventionFilters = document.getElementById("interventionFilters");
+                if (interventionFilters) {
+                    interventionFilters.addEventListener("click", function(event) {
+                        if (event.target.classList.contains("filter-btn")) {
+                            const searchInput = document.getElementById("search-intervention");
+                            if (searchInput) {
+                                searchInput.value = "";
+                            }
+                        }
+                    });
+                }
+
+                // ==========================================
+                // AGGIUNTA: Reset ricerca Agenda (Viste, Navigazione)
+                // ==========================================
+                
+                // 1. Reset al click sui pulsanti vista dell'agenda (Giorno, Settimana, Mese, Lista)
+                const agendaViews = document.querySelector(".agenda-views");
+                if (agendaViews) {
+                    agendaViews.addEventListener("click", function(event) {
+                        const btn = event.target.closest(".view-btn");
+                        if (btn) {
+                            const searchAgenda = document.getElementById("search-agenda");
+                            if (searchAgenda) {
+                                searchAgenda.value = "";
+                            }
+                        }
+                    });
+                }
+
+                // 2. Reset al click sui pulsanti di navigazione dell'agenda (Oggi, Prev, Next)
+                const agendaNav = document.querySelector(".agenda-nav");
+                if (agendaNav) {
+                    agendaNav.addEventListener("click", function(event) {
+                        const btn = event.target.closest("button");
+                        if (btn) {
+                            const searchAgenda = document.getElementById("search-agenda");
+                            if (searchAgenda) {
+                                searchAgenda.value = "";
+                            }
+                        }
+                    });
+                }
             });
+
+            // ==========================================
+            // AGGIUNTA: Reset ricerca dopo la stampa o l'annullamento della stampa (globale)
+            // ==========================================
+            function resetAllSearchInputsAfterPrint() {
+                const searchClient = document.getElementById("search-client");
+                if (searchClient && searchClient.value !== "") {
+                    searchClient.value = "";
+                    if (typeof loadClients === "function") {
+                        loadClients();
+                    }
+                }
+                const searchInput = document.getElementById("search-intervention");
+                if (searchInput && searchInput.value !== "") {
+                    searchInput.value = "";
+                    if (typeof loadInterventions === "function") {
+                        loadInterventions();
+                    }
+                }
+                const searchAgenda = document.getElementById("search-agenda");
+                if (searchAgenda && searchAgenda.value !== "") {
+                    if (typeof resetAgendaSearch === "function") {
+                        resetAgendaSearch(true);
+                    } else {
+                        searchAgenda.value = "";
+                        if (typeof renderAgendaListView === "function" && agendaView === "list") {
+                            renderAgendaListView();
+                        }
+                    }
+                }
+            }
+            window.resetAllSearchInputsAfterPrint = resetAllSearchInputsAfterPrint;
+            window.addEventListener("afterprint", resetAllSearchInputsAfterPrint);
 			// ===== SISTEMA NOTIFICHE IN-APP (anti-loop, anti-sfarfallio) =====
         (function() {
             // Sterilizza istanza precedente
@@ -14157,7 +14360,24 @@ async function loadFromLocalStorage() {
                 }
 
                 function generateClientsPaginatedHTML() {
-                    const sorted = [...dataClients()].sort((a, b) => (a.surname || '').localeCompare(b.surname || '') || (a.name || '').localeCompare(b.name || ''));
+                    let sorted = [...dataClients()];
+                    
+                    // Applica il filtro di ricerca testuale (se presente)
+                    const searchInput = document.getElementById("search-client");
+                    if (searchInput && searchInput.value) {
+                        const query = searchInput.value.toLowerCase().trim();
+                        if (query.length >= 1) {
+                            sorted = sorted.filter(c => {
+                                const fullName = `${c.name || ""} ${c.surname || ""}`.toLowerCase();
+                                const reverseFullName = `${c.surname || ""} ${c.name || ""}`.toLowerCase();
+                                return [c.name || "", c.surname || "", c.phone || "", c.address || ""].some(
+                                    (field) => field.toLowerCase().includes(query)
+                                ) || fullName.includes(query) || reverseFullName.includes(query);
+                            });
+                        }
+                    }
+                    
+                    sorted.sort((a, b) => (a.surname || '').localeCompare(b.surname || '') || (a.name || '').localeCompare(b.name || ''));
                     const rows = sorted.map(c => {
                         const count = getInterventionsByClientIdSafe(c.id).length;
                         return {
@@ -14214,6 +14434,16 @@ async function loadFromLocalStorage() {
                     } else if (filter === 'completed') {
                         filtered = filtered.filter(i => i.completed === true);
                     }
+                    
+                    // Applica il filtro di ricerca testuale (se presente)
+                    const searchInput = document.getElementById("search-intervention");
+                    if (searchInput && searchInput.value) {
+                        const query = searchInput.value.toLowerCase().trim();
+                        if (query.length >= 1) {
+                            filtered = filtered.filter(i => interventionMatchesSearch(i, query));
+                        }
+                    }
+                    
                     filtered.sort((a, b) => parseDateSafe(a.date) - parseDateSafe(b.date));
                     return { filter, filtered };
                 }
@@ -14244,9 +14474,19 @@ async function loadFromLocalStorage() {
                 }
 
                 function generateAgendaListPaginatedHTML() {
-                    const filtered = dataInterventions()
+                    let filtered = dataInterventions()
                         .filter(i => !i.completed)
                         .sort((a, b) => a.date === b.date ? (a.time || '00:00').localeCompare(b.time || '00:00') : String(a.date || '').localeCompare(String(b.date || '')));
+                    
+                    // Applica il filtro di ricerca testuale (se presente)
+                    const searchAgenda = document.getElementById("search-agenda");
+                    if (searchAgenda && searchAgenda.value) {
+                        const query = searchAgenda.value.toLowerCase().trim();
+                        if (query.length >= 1) {
+                            filtered = filtered.filter(i => interventionMatchesSearch(i, query));
+                        }
+                    }
+                    
                     const rows = filtered.map(i => {
                         const c = getClientByIdSafe(i.clientId);
                         if (!c) return null;
@@ -14528,9 +14768,15 @@ async function loadFromLocalStorage() {
                         return;
                     }
                     printDoc(generateClientsPaginatedHTML());
+                    if (typeof window.resetAllSearchInputsAfterPrint === "function") {
+                        window.resetAllSearchInputsAfterPrint();
+                    }
                 };
                 window.printInterventionList = function () {
                     printDoc(generateInterventionsPaginatedHTML());
+                    if (typeof window.resetAllSearchInputsAfterPrint === "function") {
+                        window.resetAllSearchInputsAfterPrint();
+                    }
                 };
                 window.stampaAgenda = function () {
                     const view = (typeof agendaView !== 'undefined') ? agendaView : 'day';
@@ -14538,6 +14784,9 @@ async function loadFromLocalStorage() {
                     if (view === 'list') printDoc(generateAgendaListPaginatedHTML());
                     else if (view === 'week' || view === 'month') printDoc(generateAgendaPeriodCompactPaginatedHTML(view, date));
                     else printDoc(generateAgendaPeriodPaginatedHTML(view, date));
+                    if (typeof window.resetAllSearchInputsAfterPrint === "function") {
+                        window.resetAllSearchInputsAfterPrint();
+                    }
                 };
                 window.printDateRange = function () {
                     const fromDate = document.getElementById('searchFromDate')?.value;
@@ -14563,7 +14812,12 @@ async function loadFromLocalStorage() {
                     printDoc(generateCalendarDayPaginatedHTML(date));
                 };
                 window.printClientSheet = function () {
-                    if (typeof currentClientId !== 'undefined' && currentClientId) printDoc(generateClientSheetPaginatedHTML(currentClientId));
+                    if (typeof currentClientId !== 'undefined' && currentClientId) {
+                        printDoc(generateClientSheetPaginatedHTML(currentClientId));
+                        if (typeof window.resetAllSearchInputsAfterPrint === "function") {
+                            window.resetAllSearchInputsAfterPrint();
+                        }
+                    }
                     else if (typeof showNotification === 'function') showNotification('Nessun cliente selezionato', 'warning');
                 };
                 window.printClientSheetById = function (clientId) {
@@ -14573,6 +14827,9 @@ async function loadFromLocalStorage() {
                     }
                     try { currentClientId = clientId; } catch (e) {}
                     printDoc(generateClientSheetPaginatedHTML(clientId));
+                    if (typeof window.resetAllSearchInputsAfterPrint === "function") {
+                        window.resetAllSearchInputsAfterPrint();
+                    }
                 };
                 window.printSingleIntervention = function (interventionId) {
                     if (interventionId) printDoc(generateInterventionSheetPaginatedHTML(interventionId));
@@ -15116,15 +15373,15 @@ document.addEventListener("click", function(e){
         vertical-align: middle !important;
         overflow-wrap: anywhere !important;
     }
-    #agendaListView .agenda-table th:nth-child(4),
-    #agendaListView .agenda-table td:nth-child(4),
+    #agendaListView .agenda-table th:nth-child(6),
+    #agendaListView .agenda-table td:nth-child(6),
     #agendaListView .agenda-table th:nth-child(8),
     #agendaListView .agenda-table td:nth-child(8) {
         font-size: 0.72rem !important;
         line-height: 1.12 !important;
         text-align: center !important;
     }
-    #agendaListView .agenda-table td:nth-child(4) .badge,
+    #agendaListView .agenda-table td:nth-child(6) .badge,
     #agendaListView .agenda-table td:nth-child(8) .badge {
         display: inline-block !important;
         max-width: 100% !important;
