@@ -1333,6 +1333,11 @@
                 width: fit-content;
                 border: 1px solid var(--light-gray);
             }
+            .calendar-view-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
             .view-toggle-btn {
                 padding: 4px 12px;
                 border: none;
@@ -5730,8 +5735,13 @@ body:has(#calendarSection[style*="display: block"]) .content {
             line-height: 1.1 !important;
             white-space: nowrap !important;
         }
-        #calendarSection .calendar-view-toggle {
+        #calendarSection .calendar-view-actions {
             grid-area: views;
+            flex: 0 0 auto !important;
+            min-width: max-content !important;
+            align-self: center !important;
+        }
+        #calendarSection .calendar-view-toggle {
             flex: 0 0 auto !important;
             min-width: max-content !important;
             height: 34px !important;
@@ -6653,13 +6663,16 @@ body:has(#calendarSection[style*="display: block"]) .content {
                                     <i class="fas fa-calendar-week"></i> Questa settimana
                                 </button>
                             </div>
-                            <div class="calendar-view-toggle">
-                                <button class="view-toggle-btn active" data-view="month">
-                                    <i class="fas fa-calendar-alt"></i> Mese
-                                </button>
-                                <button class="view-toggle-btn" data-view="list">
-                                    <i class="fas fa-list"></i> Lista
-                                </button>
+                            <div class="calendar-view-actions">
+                                <div class="calendar-view-toggle">
+                                    <button class="view-toggle-btn active" data-view="month">
+                                        <i class="fas fa-calendar-alt"></i> Mese
+                                    </button>
+                                    <button class="view-toggle-btn" data-view="list">
+                                        <i class="fas fa-list"></i> Lista
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary" type="button" onclick="printCalendarList()">Stampa Lista</button>
                             </div>
                         </div>
                         <div
@@ -11196,7 +11209,7 @@ async function deleteIntervention(interventionId) {
                         listItem.onclick = function () {
                             editIntervention(intervention.id);
                         };
-                        listItem.innerHTML = `<div class="list-intervention-date">${escapeHTML(formattedDate)}</div><div class="list-intervention-client">${escapeHTML(client.name)} ${escapeHTML(client.surname)}</div><div class="list-intervention-type ${escapeHTML(intervention.type)}">${escapeHTML(getInterventionTypeLabel(intervention.type))}</div><div><span class="badge ${statusClass === "urgent" ? "badge-danger" : statusClass === "completed" ? "badge-completed" : "badge-info"}">${escapeHTML(intervention.completed ? "ESEGUITO" : intervention.time || "--:--")}</span></div>`;
+                        listItem.innerHTML = `<div class="list-intervention-date">${escapeHTML(formattedDate)}</div><div class="list-intervention-client">${escapeHTML(client.name)} ${escapeHTML(client.surname)}</div><div class="list-intervention-type ${escapeHTML(intervention.type)}">${escapeHTML(getInterventionTypeLabel(intervention.type))}</div><div><span class="badge ${statusClass === "urgent" ? "badge-danger" : statusClass === "completed" ? "badge-completed" : "badge-info"}">${escapeHTML(intervention.time || "--:--")}</span></div>`;
                         listInterventions.appendChild(listItem);
                     });
             }
@@ -14745,6 +14758,59 @@ async function loadFromLocalStorage() {
                     return makeDocument('Report Intervallo Date', pages);
                 }
 
+                function filteredCalendarListForPrint() {
+                    let filtered = [];
+                    try {
+                        filtered = (typeof customFilterData !== 'undefined' && Array.isArray(customFilterData))
+                            ? [...customFilterData]
+                            : dataInterventions().filter(i => (
+                                typeof filterInterventionByCalendarFilter === 'function'
+                                    ? filterInterventionByCalendarFilter(i)
+                                    : true
+                            ));
+                    } catch (e) {
+                        filtered = dataInterventions();
+                    }
+                    return filtered.sort((a, b) => {
+                        const dateA = parseDateSafe(a.date);
+                        const dateB = parseDateSafe(b.date);
+                        const dateDiff = dateA - dateB;
+                        if (dateDiff !== 0) return dateDiff;
+                        return String(a.time || '00:00').localeCompare(String(b.time || '00:00'));
+                    });
+                }
+
+                function calendarListPrintTitle() {
+                    const fromDate = document.getElementById('searchFromDate')?.value;
+                    const toDate = document.getElementById('searchToDate')?.value;
+                    if (fromDate && toDate && typeof customFilterData !== 'undefined' && Array.isArray(customFilterData)) {
+                        const from = parseDateSafe(fromDate);
+                        const to = parseDateSafe(toDate);
+                        if (!isNaN(from.getTime()) && !isNaN(to.getTime())) {
+                            return `Lista Calendario dal ${from.toLocaleDateString('it-IT')} al ${to.toLocaleDateString('it-IT')}`;
+                        }
+                    }
+                    const activeButton = document.querySelector('.calendar-filter-btn.active');
+                    const filterName = activeButton ? activeButton.textContent.trim().replace(/\s+/g, ' ') : 'Tutti';
+                    return `Lista Calendario - ${filterName || 'Tutti'}`;
+                }
+
+                function generateCalendarListPaginatedHTML() {
+                    const filtered = filteredCalendarListForPrint();
+                    const rows = filtered.map(i => {
+                        const c = getClientByIdSafe(i.clientId);
+                        if (!c) return null;
+                        return {
+                            weight: weightFromText([c.name, c.surname, c.phone, c.address, i.notes, getTypeLabelSafe(i.type)]),
+                            html: `<tr><td>${esc(formatDateSafe(i.date))}</td><td>${esc(i.time || '--:--')}</td><td>${esc(c.name)} ${esc(c.surname)}</td><td>${esc(c.phone || '-')}</td><td>${esc(c.address || '-')}</td><td>${esc(getTypeLabelSafe(i.type))}</td><td>${esc(i.notes || '-')}</td></tr>`
+                        };
+                    }).filter(Boolean);
+                    const title = calendarListPrintTitle();
+                    const chunks = chunkWeighted(rows, 23);
+                    const pages = chunks.map(chunk => `<h2>${esc(title)}</h2><p class="total">Totale: ${filtered.length}</p>${tableHTML('calendar-range-table', ['Data', 'Ora', 'Cliente', 'Telefono', 'Indirizzo', 'Tipo', 'Note'], chunk)}`);
+                    return makeDocument(title, pages);
+                }
+
                 function generateCalendarDayPaginatedHTML(date) {
                     if (!date) return makeDocument('Report Giornaliero', ['<h2>Nessuna data selezionata</h2>']);
                     const d = date instanceof Date ? date : parseDateSafe(String(date));
@@ -14811,6 +14877,9 @@ async function loadFromLocalStorage() {
                     const date = (typeof selectedDate !== 'undefined' && selectedDate) ? selectedDate : new Date();
                     printDoc(generateCalendarDayPaginatedHTML(date));
                 };
+                window.printCalendarList = function () {
+                    printDoc(generateCalendarListPaginatedHTML());
+                };
                 window.printClientSheet = function () {
                     if (typeof currentClientId !== 'undefined' && currentClientId) {
                         printDoc(generateClientSheetPaginatedHTML(currentClientId));
@@ -14845,6 +14914,7 @@ async function loadFromLocalStorage() {
                 try { stampaAgenda = window.stampaAgenda; } catch (e) {}
                 try { printDateRange = window.printDateRange; } catch (e) {}
                 try { printCalendarDay = window.printCalendarDay; } catch (e) {}
+                try { printCalendarList = window.printCalendarList; } catch (e) {}
                 try { printClientSheet = window.printClientSheet; } catch (e) {}
                 try { printClientSheetById = window.printClientSheetById; } catch (e) {}
                 try { printSingleIntervention = window.printSingleIntervention; } catch (e) {}
@@ -14929,7 +14999,7 @@ async function loadFromLocalStorage() {
                                 <div style="font-size:0.8rem;color:var(--gray);">${escapeHTML(client.phone || "-")}</div>
                             </div>
                             <div class="list-intervention-type ${safeCalendarListClass(intervention.type)}">${escapeHTML(getInterventionTypeLabel(intervention.type))}</div>
-                            <div><span class="badge ${badgeClass}">${escapeHTML(intervention.completed ? "ESEGUITO" : intervention.time || "--:--")}</span></div>
+                            <div><span class="badge ${badgeClass}">${escapeHTML(intervention.time || "--:--")}</span></div>
                         `;
                         listInterventions.appendChild(listItem);
                     });
@@ -15392,5 +15462,5 @@ document.addEventListener("click", function(e){
         overflow-wrap: anywhere !important;
     }
 </style>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0ff1a3dfbd0edd8',t:'MTc4MjE3MTY3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0ff1a3dfbd0edd8',t:'MTc4MjE3MTY3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a107bbf0ce31f41b',t:'MTc4MjI2MjE4Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
