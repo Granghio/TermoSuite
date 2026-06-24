@@ -6315,6 +6315,37 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             /* ===== FINE PWA DESKTOP SETTINGS FULLSCREEN ===== */
 
+        /* ===== CORREZIONE RESPONSIVE INTESTAZIONI AGENDA SETTIMANA ===== */
+        html.tm-layout-phone #agendaWeekView .week-days-header {
+            padding-left: var(--tm-time-column-width, 48px) !important;
+            padding-right: 0 !important;
+        }
+        html.tm-layout-phone #agendaWeekView .week-day-header {
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 4px 1px !important;
+            gap: 2px !important;
+            white-space: normal !important;
+        }
+        html.tm-layout-phone #agendaWeekView .week-day-header div:first-child {
+            font-size: 0.72rem !important;
+            font-weight: 500 !important;
+            text-transform: uppercase;
+            line-height: 1 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        html.tm-layout-phone #agendaWeekView .week-day-header div:last-child {
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            line-height: 1 !important;
+            margin: 2px 0 0 0 !important;
+            padding: 0 !important;
+        }
+        html.tm-layout-phone #agendaWeekView .week-time-column {
+            width: var(--tm-time-column-width, 48px) !important;
+        }
 </style>
         <script>
             (function () {
