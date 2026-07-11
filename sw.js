@@ -1,4 +1,4 @@
-const CACHE_VERSION = "termomanager-pwa-v2";
+const CACHE_VERSION = "termomanager-pwa-v3";
 const PRECACHE_URLS = [
     "./",
     "./index.html",
@@ -75,5 +75,9 @@ self.addEventListener("fetch", function (event) {
     if (event.request.method !== "GET") return;
     const url = new URL(event.request.url);
     if (url.protocol !== "http:" && url.protocol !== "https:") return;
+    if (url.pathname.endsWith("/licenses.json")) {
+        event.respondWith(fetch(event.request, { cache: "no-store" }));
+        return;
+    }
     event.respondWith(networkFirst(event.request));
 });
