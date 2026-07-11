@@ -10,6 +10,7 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="TermoManager" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="manifest" href="./manifest.json" />
         <link rel="icon" href="./icons/icon-192.png" type="image/png" />
         <link rel="apple-touch-icon" href="./icons/icon-192.png" />
@@ -4283,7 +4284,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(1),
             html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(1) {
-                width: 10% !important;
+                width: 8% !important;
                 white-space: nowrap !important;
                 overflow-wrap: normal !important;
                 word-break: keep-all !important;
@@ -4353,7 +4354,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(4),
             html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4) {
-                width: 14% !important;
+                width: 13% !important;
             }
             html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(5),
             html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(5) {
@@ -4365,7 +4366,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(8),
             html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(8) {
-                width: 10% !important;
+                width: 8% !important;
             }
             html.tm-layout-phone.tm-fit-scale-active #clientsTable th:nth-child(1),
             html.tm-layout-phone.tm-fit-scale-active #clientsTable td:nth-child(1) {
@@ -4381,24 +4382,129 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(1),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(1) {
-                width: 17% !important;
+                width: 18% !important;
             }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(2),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(2) {
-                width: 11% !important;
+                width: 12% !important;
             }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(3),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(3) {
-                width: 29% !important;
+                width: 35% !important;
             }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(4),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4) {
-                width: 23% !important;
+                width: 20% !important;
             }
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(8),
             html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(8) {
-                width: 11% !important;
+                width: 15% !important;
             }
+            /* ===== SECONDO SET AGENDA LISTA (da index.html) ===== */
+            html.tm-fit-scale-active #agendaListView .agenda-table-container {
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                table-layout: fixed !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th,
+            html.tm-fit-scale-active #agendaListView .agenda-table td {
+                white-space: normal !important;
+                overflow-wrap: anywhere !important;
+                word-break: break-word !important;
+                padding: 0.42rem 0.35rem !important;
+                font-size: 0.78rem !important;
+                line-height: 1.18;
+                vertical-align: middle;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(1),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(1) {
+                width: 8% !important;
+                white-space: nowrap !important;
+                overflow-wrap: normal !important;
+                word-break: keep-all !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(2),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(2) {
+                width: 6% !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(3),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(3) {
+                width: 18% !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(4),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4) {
+                width: 12% !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(5),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(5) {
+                width: 24% !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(6),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(6) {
+                width: 12% !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(7),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(7) {
+                width: 12% !important;
+            }
+            html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(8),
+            html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(8) {
+                width: 8% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(1),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(1) {
+                width: 12% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(2),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(2) {
+                width: 7% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(3),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(3) {
+                width: 21% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(4),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4) {
+                width: 13% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(5),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(5) {
+                width: 27% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(6),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(6) {
+                width: 12% !important;
+            }
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(8),
+            html.tm-layout-tablet-portrait.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(8) {
+                width: 8% !important;
+            }
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(1),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(1) {
+                width: 18% !important;
+            }
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(2),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(2) {
+                width: 12% !important;
+            }
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(3),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(3) {
+                width: 35% !important;
+            }
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(4),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(4) {
+                width: 20% !important;
+            }
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(8),
+            html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(8) {
+                width: 15% !important;
+            }
+            /* ===== FINE SECONDO SET AGENDA LISTA ===== */
             html.tm-fit-scale-active .logo h1 {
                 font-size: 1.35rem !important;
             }
@@ -4760,7 +4866,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
             }
             html.tm-fit-scale-active #agendaListView .agenda-table th:nth-child(1),
             html.tm-fit-scale-active #agendaListView .agenda-table td:nth-child(1) {
-                width: 10% !important;
+                width: 8% !important;
                 white-space: nowrap !important;
                 overflow-wrap: normal !important;
                 word-break: keep-all !important;
@@ -6276,6 +6382,7 @@ body:has(#calendarSection[style*="display: block"]) .content {
             min-width: 0 !important;
             max-width: 100% !important;
         }
+
             /* ===== FINE FIX TABLET IMPOSTAZIONI ===== */
 
             /* ===== PWA DESKTOP SETTINGS FULLSCREEN ===== */
@@ -6297,9 +6404,64 @@ body:has(#calendarSection[style*="display: block"]) .content {
             html.tm-layout-desktop-narrow #settingsSection > .settings-grid {
                 width: 100% !important;
                 min-width: 0 !important;
-                align-content: start !important;
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                align-content: stretch !important;
+                align-items: stretch !important;
+                grid-auto-rows: 1fr !important;
+            }
+            html.tm-layout-desktop #settingsSection > .settings-grid > .settings-section,
+            html.tm-layout-desktop #settingsSection > .settings-grid > .danger-zone,
+            html.tm-layout-desktop #settingsSection > .settings-grid > .about-app,
+            html.tm-layout-desktop-narrow #settingsSection > .settings-grid > .settings-section,
+            html.tm-layout-desktop-narrow #settingsSection > .settings-grid > .danger-zone,
+            html.tm-layout-desktop-narrow #settingsSection > .settings-grid > .about-app {
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: 0 !important;
             }
             /* ===== FINE PWA DESKTOP SETTINGS FULLSCREEN ===== */
+
+        /* ===== FIX TELEFONO: calendario principale e Agenda Mese elastici =====
+           Corregge solo le altezze delle griglie mese su telefono: niente clamp
+           fisso, così sotto ~915px si riducono e sopra riempiono lo spazio. */
+        html.tm-layout-phone.tm-section-calendar #calendarSection #calendarDays {
+            display: grid !important;
+            min-height: 0 !important;
+            height: calc(var(--tm-app-height, 100dvh) - 275px) !important;
+            max-height: none !important;
+            grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+            grid-template-rows: repeat(6, minmax(0, 1fr)) !important;
+            grid-auto-rows: minmax(0, 1fr) !important;
+            align-content: stretch !important;
+        }
+        html.tm-layout-phone.tm-orientation-landscape.tm-section-calendar #calendarSection #calendarDays {
+            height: calc(var(--tm-app-height, 100dvh) - 160px) !important;
+        }
+        html.tm-layout-phone.tm-section-calendar #calendarSection .calendar-day {
+            min-height: 0 !important;
+            height: 100% !important;
+        }
+        html.tm-layout-phone #agendaMonthGrid .agenda-month-days {
+            display: grid !important;
+            min-height: 0 !important;
+            height: calc(var(--tm-app-height, 100dvh) - 250px) !important;
+            max-height: none !important;
+            grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+            grid-template-rows: repeat(6, minmax(0, 1fr)) !important;
+            grid-auto-rows: minmax(0, 1fr) !important;
+            align-self: stretch !important;
+            align-content: stretch !important;
+            overflow: hidden !important;
+        }
+        html.tm-layout-phone.tm-orientation-landscape #agendaMonthGrid .agenda-month-days {
+            height: calc(var(--tm-app-height, 100dvh) - 155px) !important;
+        }
+        html.tm-layout-phone #agendaMonthGrid .agenda-month-day {
+            min-height: 0 !important;
+            height: 100% !important;
+        }
+        /* ===== FINE FIX TELEFONO CALENDARI ELASTICI ===== */
 
         /* ===== CORREZIONE RESPONSIVE INTESTAZIONI AGENDA SETTIMANA ===== */
         html.tm-layout-phone #agendaWeekView .week-days-header {
@@ -6859,127 +7021,102 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     </div>
                     <div class="section-content" id="settingsSection" style="display: none">
                         <div class="settings-grid">
-                         <!-- Sezione Notifiche e Avvisi mantenuta -->
-                        <div class="settings-section">
-                            <h3><i class="fas fa-bell"></i> Notifiche e Avvisi</h3>
-                            <div class="settings-option">
-                                <label for="notifyUrgent"
-                                    ><i class="fas fa-bell"></i>
-                                    <span>Notifiche interventi</span></label
-                                ><label class="switch"
-                                    ><input checked="" id="notifyUrgent" type="checkbox" /><span class="slider"></span
-                                ></label>
-                            </div>
-                            <div class="settings-option">
-                                <label for="daysBeforeNotify"
-                                    ><i class="fas fa-calendar-day"></i> <span>Avvisa giorni prima:</span></label
-                                >
-                                <div>
-                                    <input
-                                        class="form-control"
-                                        id="daysBeforeNotify"
-                                        max="7"
-                                        min="1"
-                                        style="width: 150px; display: inline-block"
-                                        type="range"
-                                        value="3"
-                                    /><span class="range-value" id="daysValue">3 giorni</span>
+                            <div class="settings-section">
+                                <h3><i class="fas fa-bell"></i> Notifiche e Avvisi</h3>
+                                <div class="settings-option">
+                                    <label for="notifyUrgent"><i class="fas fa-bell"></i> <span>Notifiche interventi</span></label>
+                                    <label class="switch"><input checked="" id="notifyUrgent" type="checkbox" /><span class="slider"></span></label>
+                                </div>
+                                <div class="settings-option">
+                                    <label for="daysBeforeNotify"><i class="fas fa-calendar-day"></i> <span>Avvisa giorni prima:</span></label>
+                                    <div>
+                                        <input class="form-control" id="daysBeforeNotify" max="7" min="1" style="width: 150px; display: inline-block" type="range" value="3" />
+                                        <span class="range-value" id="daysValue">3 giorni</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="settings-section" id="pwaSettingsSection" style="border-left-color: #2563eb;">
-                            <h3><i class="fas fa-database" style="color:#2563eb;"></i> PWA Offline</h3>
-                            <div class="info-box" id="pwaStatusBox" style="background-color:#eff6ff; border-left-color:#2563eb;">
-                                <p><strong>Stato app:</strong> <span id="pwaDisplayMode">Verifica...</span></p>
-                                <p><strong>Offline:</strong> <span id="pwaServiceWorkerStatus">Verifica...</span></p>
-                                <p><strong>Memoria protetta:</strong> <span id="pwaStorageStatus">Verifica...</span></p>
-                                <p><strong>ID licenza attiva:</strong> <span id="pwaBrowserId" style="font-family: monospace; overflow-wrap: anywhere;">Verifica...</span></p>
-                                <p><strong>Licenza remota:</strong> <span id="pwaLicenseRemoteStatus">Verifica...</span></p>
-                            </div>
-                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
-                                <button class="btn btn-primary" id="pwaInstallBtn" type="button"><i class="fas fa-download"></i> Installa App</button>
-                                <button class="btn btn-secondary" id="pwaPersistStorageBtn" type="button"><i class="fas fa-database"></i> Proteggi Memoria</button>
-                                <button class="btn btn-outline" id="pwaCopyIdBtn" type="button"><i class="fas fa-copy"></i> Copia ID Licenza</button>
-                                <button class="btn btn-outline" id="pwaCheckLicenseBtn" type="button"><i class="fas fa-check-circle"></i> Verifica Licenza</button>
-                            </div>
-                        </div>
-                        <!-- ===== NUOVA SEZIONE SALVATAGGIO ESTERNO AUTOMATICO ===== -->
-                        <div class="settings-section" id="externalBackupSection" style="border-left-color: #10b981;">
-                            <h3><i class="fas fa-cloud-upload-alt" style="color:#10b981;"></i> Backup Automatico Android</h3>
-                            <p>Nell'app Android il backup si attiva da solo e aggiorna un archivio interno dell'app.</p>
-                            <div class="info-box" style="background-color:#f0fdf4; border-left-color:#10b981;">
-                                <p><strong>Come funziona:</strong><br>
-                                1. Non devi premere nulla: il backup parte all'avvio dell'app Android.<br>
-                                2. Il file automatico viene salvato nello spazio sicuro dell'app.<br>
-                                3. Ogni modifica aggiorna il backup in automatico.
-                                </p>
-                            </div>
-                            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
-                                <button class="btn btn-success" id="connectExternalBackupBtn" style="background-color: #10b981; display: none;"><i class="fas fa-link"></i> Attiva Backup Automatico</button>
-                                <button class="btn btn-secondary" id="disconnectExternalBackupBtn" style="display: none;"><i class="fas fa-unlink"></i> Disattiva Backup</button>
-                                <button class="btn btn-primary" id="restoreExternalBackupBtn" type="button"><i class="fas fa-undo"></i> Ripristina Backup</button>
-                            </div>
-                            <div id="externalBackupStatus" class="external-backup-status" style="display: none;">
-                                <i class="fas fa-info-circle"></i> Backup automatico non attivo.
-                            </div>
-                        </div>
-                        <!-- Sezione Backup Manuale -->
-                        <div class="settings-section">
-                            <h3><i class="fas fa-database"></i> Backup Manuale (Classico)</h3>
-                            <div style="display: flex; gap: 10px; margin-bottom: 10px">
-                                <button class="btn btn-primary" onclick="createManualBackup()">
-                                    <i class="fas fa-download"></i> Scarica Backup</button
-                                ><button class="btn btn-secondary" onclick="openImportModal()">
-                                    <i class="fas fa-upload"></i> Ripristina Backup
-                                </button>
-                            </div>
-                            <div class="info-box">
-                                <button class="btn btn-outline" onclick="showBackupHistory()" style="margin-top: 5px">
-                                    <i class="fas fa-history"></i> Vedi cronologia backup locali
-                                </button>
-                            </div>
-                        </div>
-                        <div class="settings-section" style="border-left-color: #f59e0b;">
-                            <h3><i class="fas fa-church" style="color:#f59e0b;"></i> Festività Locali</h3>
-                            <p>Aggiungi le festività del tuo comune (patrono, santi locali, fiere...) per evidenziarle in rosso su calendario e agenda.</p>
-                            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: flex-end;">
-                                <div style="flex: 1; min-width: 140px;">
-                                    <label style="font-size: 0.85rem; color: var(--gray); display: block; margin-bottom: 4px;">Nome (opzionale)</label>
-                                    <input class="form-control" id="localFestivityName" placeholder="Es. San Giovanni" type="text" />
+
+                            <div class="settings-section" id="pwaSettingsSection" style="border-left-color: #2563eb;">
+                                <h3><i class="fas fa-database" style="color:#2563eb;"></i> PWA Offline</h3>
+                                <div class="info-box" id="pwaStatusBox" style="background-color:#eff6ff; border-left-color:#2563eb;">
+                                    <p><strong>Stato app:</strong> <span id="pwaDisplayMode">Verifica...</span></p>
+                                    <p><strong>Offline:</strong> <span id="pwaServiceWorkerStatus">Verifica...</span></p>
+                                    <p><strong>Memoria protetta:</strong> <span id="pwaStorageStatus">Verifica...</span></p>
+                                    <p><strong>ID licenza attiva:</strong> <span id="pwaBrowserId" style="font-family: monospace; overflow-wrap: anywhere;">Verifica...</span></p>
+                                    <p><strong>Licenza remota:</strong> <span id="pwaLicenseRemoteStatus">Verifica...</span></p>
                                 </div>
-                                <div style="min-width: 140px;">
-                                    <label style="font-size: 0.85rem; color: var(--gray); display: block; margin-bottom: 4px;">Data</label>
-                                    <input class="form-control" id="localFestivityDate" type="date" />
+                                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
+                                    <button class="btn btn-primary" id="pwaInstallBtn" type="button"><i class="fas fa-download"></i> Installa App</button>
+                                    <button class="btn btn-secondary" id="pwaPersistStorageBtn" type="button"><i class="fas fa-database"></i> Proteggi Memoria</button>
+                                    <button class="btn btn-outline" id="pwaCopyIdBtn" type="button"><i class="fas fa-copy"></i> Copia ID Licenza</button>
+                                    <button class="btn btn-outline" id="pwaCheckLicenseBtn" type="button"><i class="fas fa-check-circle"></i> Verifica Licenza</button>
                                 </div>
-                                <button class="btn btn-primary" id="addLocalFestivityBtn" type="button"><i class="fas fa-plus"></i> Aggiungi</button>
                             </div>
-                            <div id="localFestivitiesList" style="display: flex; flex-direction: column; gap: 6px;">
-                                <p style="color: var(--gray); font-size: 0.9rem; margin: 0;">Nessuna festività locale aggiunta.</p>
-                            </div>
-                        </div>
-                        </div><!-- /.settings-grid -->
-                        <div class="settings-grid">
-                        <div class="danger-zone">
-                            <h3><i class="fas fa-exclamation-triangle"></i> Zona Pericolosa</h3>
-                            <div class="settings-option">
-                                <div>
-                                    <h4><i class="fas fa-eraser"></i> Cancella Tutti i Dati</h4>
-                                    <p>Elimina tutti i clienti e interventi dal sistema.</p>
+
+                            <div class="settings-section" id="externalBackupSection" style="border-left-color: #10b981;">
+                                <h3><i class="fas fa-history" style="color:#10b981;"></i> Snapshot Automatico di Sicurezza</h3>
+                                <p>L'applicazione esegue automaticamente uno snapshot locale ad ogni modifica per prevenire perdite accidentali nel browser.</p>
+                                <div class="info-box" style="background-color:#f0fdf4; border-left-color:#10b981;">
+                                    <p><strong>Come funziona:</strong><br>
+                                    1. <strong>Salvataggio Continuo:</strong> Ogni inserimento, modifica o cancellazione di clienti o interventi aggiorna istantaneamente lo snapshot locale di sicurezza.<br>
+                                    2. <strong>Isolamento Dati:</strong> Questo salvataggio è memorizzato in un archivio separato e protetto nel browser (indipendente dai dati attivi).<br>
+                                    3. <strong>Ripristino Rapido:</strong> Se commetti errori o perdi informazioni, puoi caricare l'ultimo snapshot registrato per tornare all'ultimo stato integro.</p>
                                 </div>
-                                <button class="btn btn-danger" onclick="confirmDataReset()">
-                                    <i class="fas fa-trash"></i> Reset Dati
-                                </button>
+                                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                                    <button class="btn btn-primary" id="restoreExternalBackupBtn" type="button"><i class="fas fa-undo"></i> Ripristina Ultimo Snapshot</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="about-app">
-                            <i class="fas fa-fire"></i>
-                            <div class="about-content">
-                                <h3>TermoManager</h3>
-                                <p><strong>Versione:</strong> <span class="version">5.1</span></p>
-                                <p><strong>Sviluppatore:</strong> Gian Dem</p>
-                                <p><strong>Ultimo aggiornamento:</strong> <span id="currentDate"></span></p>
+
+                            <div class="settings-section">
+                                <h3><i class="fas fa-database"></i> Backup Manuale (Classico)</h3>
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px">
+                                    <button class="btn btn-primary" onclick="createManualBackup()"><i class="fas fa-download"></i> Scarica Backup</button>
+                                    <button class="btn btn-secondary" onclick="openImportModal()"><i class="fas fa-upload"></i> Ripristina Backup</button>
+                                </div>
+                                <div class="info-box">
+                                    <button class="btn btn-outline" onclick="showBackupHistory()" style="margin-top: 5px"><i class="fas fa-history"></i> Vedi cronologia backup locali</button>
+                                </div>
                             </div>
-                        </div>
+
+                            <div class="settings-section" style="border-left-color: #f59e0b;">
+                                <h3><i class="fas fa-church" style="color:#f59e0b;"></i> Festività Locali</h3>
+                                <p>Aggiungi le festività del tuo comune (patrono, santi locali, fiere...) per evidenziarle in rosso su calendario e agenda.</p>
+                                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: flex-end;">
+                                    <div style="flex: 1; min-width: 140px;">
+                                        <label style="font-size: 0.85rem; color: var(--gray); display: block; margin-bottom: 4px;">Nome (opzionale)</label>
+                                        <input class="form-control" id="localFestivityName" placeholder="Es. San Giovanni" type="text" />
+                                    </div>
+                                    <div style="min-width: 140px;">
+                                        <label style="font-size: 0.85rem; color: var(--gray); display: block; margin-bottom: 4px;">Data</label>
+                                        <input class="form-control" id="localFestivityDate" type="date" />
+                                    </div>
+                                    <button class="btn btn-primary" id="addLocalFestivityBtn" type="button"><i class="fas fa-plus"></i> Aggiungi</button>
+                                </div>
+                                <div id="localFestivitiesList" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <p style="color: var(--gray); font-size: 0.9rem; margin: 0;">Nessuna festività locale aggiunta.</p>
+                                </div>
+                            </div>
+
+                            <div class="danger-zone">
+                                <h3><i class="fas fa-exclamation-triangle"></i> Zona Pericolosa</h3>
+                                <div class="settings-option">
+                                    <div>
+                                        <h4><i class="fas fa-eraser"></i> Cancella Tutti i Dati</h4>
+                                        <p>Elimina tutti i clienti e interventi dal sistema.</p>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="confirmDataReset()"><i class="fas fa-trash"></i> Reset Dati</button>
+                                </div>
+                            </div>
+
+                            <div class="about-app">
+                                <i class="fas fa-fire"></i>
+                                <div class="about-content">
+                                    <h3>TermoManager</h3>
+                                    <p><strong>Versione:</strong> <span class="version">5.1</span></p>
+                                    <p><strong>Sviluppatore:</strong> Gian Dem</p>
+                                    <p><strong>Ultimo aggiornamento:</strong> <span id="currentDate"></span></p>
+                                </div>
+                            </div>
                         </div><!-- /.settings-grid -->
                     </div>
                 </div>
@@ -7319,6 +7456,89 @@ body:has(#calendarSection[style*="display: block"]) .content {
                     </div>
                 </div>
                 <div class="modal-footer"><button class="btn btn-danger" id="closeBackupBtn">Chiudi</button></div>
+            </div>
+        </div>
+        
+        <!-- Modal per l'installazione su iOS / Apple -->
+        <div class="modal" id="appleInstallModal">
+            <div class="modal-content" style="max-width: 480px;">
+                <div class="modal-header">
+                    <h3><i class="fab fa-apple"></i> Guida Installazione Apple</h3>
+                    <button class="close-btn" id="closeAppleInstallModal">×</button>
+                </div>
+                <div class="modal-body" style="font-size: 0.95rem; line-height: 1.5; color: var(--dark); max-height: calc(100vh - 160px); overflow-y: auto;">
+                    <div style="background-color: #eff6ff; border-left: 4px solid #2563eb; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.88rem; color: #1e3a8a; line-height: 1.4;">
+                        <i class="fab fa-apple" style="color: #2563eb;"></i> <strong>Perché l'installazione è manuale su Apple?</strong><br>
+                        A differenza di Android, Apple (iOS) non consente l'installazione automatica delle PWA con un singolo pulsante. Inoltre, l'aggiunta alla schermata Home è supportata <strong>solo dal browser Safari di serie</strong> (browser alternativi come Chrome, Edge o i browser interni di Facebook, Instagram e WhatsApp non supportano tecnicamente questa funzione).
+                    </div>
+                    <p style="margin-bottom: 15px;">Segui questa guida passo-passo illustrata per aggiungere <strong>TermoManager</strong> sulla tua schermata Home:</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
+                        <!-- Step 1 -->
+                        <div style="display: flex; gap: 15px; align-items: flex-start; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="flex-shrink: 0;">
+                                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="background: #eff6ff; padding: 6px; border-radius: 8px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 4px; color: #1e293b; font-size: 0.92rem; font-weight: bold;">1. Apri l'app in Safari</h4>
+                                <p style="font-size: 0.82rem; color: #64748b;">Accedi all'app utilizzando esclusivamente il browser <strong>Safari</strong> di Apple (non supportato da Chrome, Facebook o altre app).</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2 -->
+                        <div style="display: flex; gap: 15px; align-items: flex-start; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="flex-shrink: 0;">
+                                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="background: #eff6ff; padding: 6px; border-radius: 8px;">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                    <polyline points="16 6 12 2 8 6"></polyline>
+                                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 4px; color: #1e293b; font-size: 0.92rem; font-weight: bold;">2. Tocca l'icona Condividi</h4>
+                                <p style="font-size: 0.82rem; color: #64748b;">Tocca il pulsante <strong>Condividi</strong> situato nella barra di Safari (in basso su iPhone, in alto su iPad).</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3 -->
+                        <div style="display: flex; gap: 15px; align-items: flex-start; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="flex-shrink: 0;">
+                                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="background: #eff6ff; padding: 6px; border-radius: 8px;">
+                                    <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 4px; color: #1e293b; font-size: 0.92rem; font-weight: bold;">3. Aggiungi alla Schermata Home</h4>
+                                <p style="font-size: 0.82rem; color: #64748b;">Scorri l'elenco delle opzioni verso il basso e seleziona la voce <strong>"Aggiungi alla schermata Home"</strong>.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 4 -->
+                        <div style="display: flex; gap: 15px; align-items: flex-start; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #10b981; border-radius: 8px; color: white;">
+                                <svg viewBox="0 0 24 24" width="22" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 4px; color: #1e293b; font-size: 0.92rem; font-weight: bold;">4. Tocca "Aggiungi"</h4>
+                                <p style="font-size: 0.82rem; color: #64748b;">Conferma toccando <strong>"Aggiungi"</strong> in alto a destra. L'applicazione apparirà subito sulla tua Home.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 6px; font-size: 0.88rem; color: #78350f;">
+                        <i class="fas fa-exclamation-triangle" style="color: #d97706;"></i> <strong>Nota:</strong> Una volta aggiunta alla Home, l'applicazione manterrà i tuoi dati in modo sicuro e persistente senza cancellarli.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="closeAppleInstallBtn">Ho capito</button>
+                </div>
             </div>
         </div>
         <div id="print-footer" style="display: none"></div>
@@ -7835,6 +8055,39 @@ body:has(#calendarSection[style*="display: block"]) .content {
             // ===== PLATFORM + STORAGE ADAPTER =====
             // Tutte le funzioni dipendenti dalla piattaforma passano da qui.
             const Platform = {
+                isApple() {
+                    const ua = navigator.userAgent || "";
+                    return /iPhone|iPad|iPod|Macintosh/i.test(ua) || 
+                           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                },
+                async shareFile(filename, content, mimeType = "application/json") {
+                    try {
+                        const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
+                        const file = new File([blob], filename, { type: mimeType });
+                        
+                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                files: [file],
+                                title: filename,
+                                text: `TermoManager Backup: ${filename}`
+                            });
+                            return true;
+                        } else if (navigator.share) {
+                            await navigator.share({
+                                title: filename,
+                                text: typeof content === 'string' ? content : JSON.stringify(content)
+                            });
+                            return true;
+                        }
+                        return false;
+                    } catch (error) {
+                        console.error("Errore condivisione file:", error);
+                        if (error.name === "AbortError") {
+                            return true;
+                        }
+                        return false;
+                    }
+                },
                 isAndroid() {
                     return /Android/i.test(navigator.userAgent || "");
                 },
@@ -11635,11 +11888,18 @@ html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-ch
                 const installBtn = document.getElementById("pwaInstallBtn");
                 if (installBtn) {
                     const installable = pwa.canInstall();
-                    installBtn.disabled = standalone || !installable;
-                    installBtn.style.display = standalone ? "none" : "inline-flex";
-                    installBtn.innerHTML = installable
-                        ? '<i class="fas fa-download"></i> Installa App'
-                        : '<i class="fas fa-download"></i> Installazione non disponibile';
+                    const isApple = Platform.isApple();
+                    if (isApple && !standalone) {
+                        installBtn.disabled = false;
+                        installBtn.style.display = "inline-flex";
+                        installBtn.innerHTML = '<i class="fab fa-apple"></i> Installa su Apple';
+                    } else {
+                        installBtn.disabled = standalone || !installable;
+                        installBtn.style.display = standalone ? "none" : "inline-flex";
+                        installBtn.innerHTML = installable
+                            ? '<i class="fas fa-download"></i> Installa App'
+                            : '<i class="fas fa-download"></i> Installazione non disponibile';
+                    }
                 }
                 const persistBtn = document.getElementById("pwaPersistStorageBtn");
                 if (persistBtn) {
@@ -11679,6 +11939,11 @@ html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-ch
             async function installPwaFromSettings() {
                 const pwa = window.TermoManagerPWA;
                 if (!pwa) return;
+                if (Platform.isApple()) {
+                    const modal = document.getElementById("appleInstallModal");
+                    if (modal) modal.classList.add("active");
+                    return;
+                }
                 if (!pwa.canInstall()) {
                     showNotification("Installazione PWA non disponibile in questo momento.", "info");
                     await updatePwaSettingsUi();
@@ -11968,35 +12233,15 @@ html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-ch
                 });
             }
             function updateExternalBackupUi() {
-                const connectBtn = document.getElementById("connectExternalBackupBtn");
-                const disconnectBtn = document.getElementById("disconnectExternalBackupBtn");
+                const section = document.getElementById("externalBackupSection");
+                if (section) {
+                    section.style.display = "block";
+                }
                 const restoreBtn = document.getElementById("restoreExternalBackupBtn");
-                const statusDiv = document.getElementById("externalBackupStatus");
-                const isAndroidBackup = isAndroidNativeBackupTarget();
-                const isActive = isExternalBackupActive();
-                if (connectBtn) {
-                    connectBtn.style.display = "none";
-                }
-                if (disconnectBtn) {
-                    disconnectBtn.style.display = "none";
-                }
                 if (restoreBtn) {
-                    restoreBtn.innerHTML = '<i class="fas fa-undo"></i> Ripristina Backup';
+                    restoreBtn.innerHTML = '<i class="fas fa-undo"></i> Ripristina Ultimo Snapshot';
                     restoreBtn.style.display = "inline-flex";
                 }
-                if (!statusDiv) return;
-                statusDiv.className = isActive ? "external-backup-status connected" : "external-backup-status";
-                if (isActive && externalBackupMode === ANDROID_BACKUP_MODE) {
-                    statusDiv.style.display = "block";
-                    statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Backup Android attivo nello spazio interno dell'app.`;
-                } else if (isAndroidBackup) {
-                    statusDiv.style.display = "block";
-                    statusDiv.innerHTML = `<i class="fas fa-info-circle"></i> Backup automatico Android non attivo.`;
-                } else {
-                    statusDiv.style.display = "none";
-                    statusDiv.innerHTML = "";
-                }
-                if (window.TermoManagerOfflineIcons) window.TermoManagerOfflineIcons.hydrate(statusDiv);
             }
             async function ensureAndroidBackupPermission() {
                 const filesystem = getFilesystemPlugin();
@@ -12055,21 +12300,17 @@ html.tm-layout-phone.tm-fit-scale-active #agendaListView .agenda-table td:nth-ch
                     clearTimeout(externalBackupWriteTimer);
                     externalBackupWriteTimer = null;
                 }
-                if (isAndroidNativeBackupTarget()) {
-                    await ensureAndroidBackupPermission();
-                    const filesystem = getFilesystemPlugin();
-                    if (!filesystem || typeof filesystem.readFile !== "function") {
-                        throw new Error("Plugin Filesystem non disponibile per leggere il backup.");
-                    }
-                    const result = await filesystem.readFile({
-                        path: ANDROID_BACKUP_PATH,
-                        directory: ANDROID_BACKUP_DIRECTORY,
-                        encoding: "utf8"
-                    });
-                    const raw = typeof result.data === "string" ? result.data : await result.data.text();
-                    return JSON.parse(raw);
+                // GitHub Pages PWA: Read from localStorage automatic backup!
+                const localBackup = StorageAdapter.loadSync("termoManagerData_backup", null);
+                if (!localBackup || (!localBackup.clients && !localBackup.interventions)) {
+                    throw new Error("Nessun backup automatico di sicurezza trovato nel browser.");
                 }
-                throw new Error("Il ripristino automatico e' disponibile solo nell'app Android.");
+                return {
+                    clients: localBackup.clients || [],
+                    interventions: localBackup.interventions || [],
+                    backupDate: localBackup.savedAt || new Date().toISOString(),
+                    backupType: "Automatico locale"
+                };
             }
             function refreshViewsAfterBackupRestore() {
                 sanitizeData();
@@ -12235,6 +12476,18 @@ async function loadFromLocalStorage() {
         }
     }
 }
+            async function saveOrShareBackupFile(filename, content, mimeType = "application/json") {
+                const isMobile = Platform.isAndroid() || Platform.isApple() || Platform.isMobile();
+                if (isMobile && navigator.share) {
+                    const shared = await Platform.shareFile(filename, content, mimeType);
+                    if (shared) {
+                        showNotification("Backup condiviso con successo!", "success");
+                        return;
+                    }
+                }
+                Platform.downloadFile(filename, content, mimeType);
+                showNotification("Backup salvato con successo!", "success");
+            }
             function createManualBackup() {
                 try {
                     const backupData = {
@@ -12256,8 +12509,8 @@ async function loadFromLocalStorage() {
                     }
                     StorageAdapter.saveSync("termoManagerBackupHistory", backupHistory);
                     const dataStr = JSON.stringify(backupData, null, 2);
-                    Platform.downloadFile(`termomanager-backup-${new Date().toISOString().split("T")[0]}.json`, dataStr, "application/json");
-                    showNotification(`Backup creato con successo!`, "success");
+                    const filename = `termomanager-backup-${new Date().toISOString().split("T")[0]}.json`;
+                    saveOrShareBackupFile(filename, dataStr, "application/json");
                 } catch (error) {
                     console.error("Errore creazione backup:", error);
                     showNotification("Errore nella creazione del backup", "danger");
@@ -12393,11 +12646,11 @@ async function loadFromLocalStorage() {
                 try {
                     const backup = backupHistory[index];
                     const dataStr = JSON.stringify(backup.data, null, 2);
-                    Platform.downloadFile(`termomanager-backup-${new Date(backup.date).toISOString().split("T")[0]}.json`, dataStr, "application/json");
-                    showNotification("Backup scaricato con successo!", "success");
+                    const filename = `termomanager-backup-${new Date(backup.date).toISOString().split("T")[0]}.json`;
+                    saveOrShareBackupFile(filename, dataStr, "application/json");
                 } catch (error) {
-                    console.error("Errore download backup:", error);
-                    showNotification("Errore nel download del backup", "danger");
+                    console.error("Errore salvataggio backup:", error);
+                    showNotification("Errore nel salvataggio del backup", "danger");
                 }
             }
             function showSection(section) {
@@ -13838,6 +14091,26 @@ async function loadFromLocalStorage() {
                 if (closeBackupHistoryModalBtn) {
                     closeBackupHistoryModalBtn.addEventListener("click", () => {
                         const modal = document.getElementById("backupHistoryModal");
+                        if (modal) {
+                            resetModalPosition(modal);
+                            modal.classList.remove("active");
+                        }
+                    });
+                }
+                const closeAppleInstallModalBtn = document.getElementById("closeAppleInstallModal");
+                if (closeAppleInstallModalBtn) {
+                    closeAppleInstallModalBtn.addEventListener("click", () => {
+                        const modal = document.getElementById("appleInstallModal");
+                        if (modal) {
+                            resetModalPosition(modal);
+                            modal.classList.remove("active");
+                        }
+                    });
+                }
+                const closeAppleInstallBtn = document.getElementById("closeAppleInstallBtn");
+                if (closeAppleInstallBtn) {
+                    closeAppleInstallBtn.addEventListener("click", () => {
+                        const modal = document.getElementById("appleInstallModal");
                         if (modal) {
                             resetModalPosition(modal);
                             modal.classList.remove("active");
@@ -15705,7 +15978,7 @@ document.addEventListener("click", function(e){
     #agendaListView .agenda-table td:nth-child(8) {
         font-size: 0.72rem !important;
         line-height: 1.12 !important;
-        text-align: center !important;
+        text-align: left !important;
     }
     #agendaListView .agenda-table td:nth-child(6) .badge,
     #agendaListView .agenda-table td:nth-child(8) .badge {
@@ -15820,6 +16093,45 @@ document.addEventListener("click", function(e){
             word-break: normal !important;
         }
         /* ===== FINE INTERVENTI COMPATTI ===== */
+
+        /* ===== SOLO INTERVENTI: Note più stretta, Scadenza leggermente più larga, layout 100% ===== */
+        #interventionsTable,
+        html.tm-fit-scale-active #interventionsTable,
+        html.tm-layout-tablet-portrait.tm-fit-scale-active #interventionsTable,
+        html.tm-layout-tablet-landscape.tm-fit-scale-active #interventionsTable,
+        html.tm-fit-scale-active.tm-layout-tablet-landscape:not(.tm-layout-phone):not(.tm-layout-tablet-portrait) #interventionsTable {
+            width: 100% !important;
+            max-width: 100% !important;
+            table-layout: fixed !important;
+        }
+        #interventionsTable th:nth-child(4),
+        #interventionsTable td:nth-child(4),
+        html.tm-fit-scale-active #interventionsTable th:nth-child(4),
+        html.tm-fit-scale-active #interventionsTable td:nth-child(4),
+        html.tm-layout-tablet-portrait.tm-fit-scale-active #interventionsTable th:nth-child(4),
+        html.tm-layout-tablet-portrait.tm-fit-scale-active #interventionsTable td:nth-child(4),
+        html.tm-layout-tablet-landscape.tm-fit-scale-active #interventionsTable th:nth-child(4),
+        html.tm-layout-tablet-landscape.tm-fit-scale-active #interventionsTable td:nth-child(4),
+        html.tm-fit-scale-active.tm-layout-tablet-landscape:not(.tm-layout-phone):not(.tm-layout-tablet-portrait) #interventionsTable th:nth-child(4),
+        html.tm-fit-scale-active.tm-layout-tablet-landscape:not(.tm-layout-phone):not(.tm-layout-tablet-portrait) #interventionsTable td:nth-child(4) {
+            width: 22% !important;
+            white-space: normal !important;
+            overflow-wrap: anywhere !important;
+            word-break: break-word !important;
+        }
+        #interventionsTable th:nth-child(5),
+        #interventionsTable td:nth-child(5),
+        html.tm-fit-scale-active #interventionsTable th:nth-child(5),
+        html.tm-fit-scale-active #interventionsTable td:nth-child(5),
+        html.tm-layout-tablet-portrait.tm-fit-scale-active #interventionsTable th:nth-child(5),
+        html.tm-layout-tablet-portrait.tm-fit-scale-active #interventionsTable td:nth-child(5),
+        html.tm-layout-tablet-landscape.tm-fit-scale-active #interventionsTable th:nth-child(5),
+        html.tm-layout-tablet-landscape.tm-fit-scale-active #interventionsTable td:nth-child(5),
+        html.tm-fit-scale-active.tm-layout-tablet-landscape:not(.tm-layout-phone):not(.tm-layout-tablet-portrait) #interventionsTable th:nth-child(5),
+        html.tm-fit-scale-active.tm-layout-tablet-landscape:not(.tm-layout-phone):not(.tm-layout-tablet-portrait) #interventionsTable td:nth-child(5) {
+            width: 18% !important;
+        }
+        /* ===== FINE SOLO INTERVENTI ===== */
 
         /* ===== MENU FILTRI INTERVENTI SU SCHERMI PICCOLI ===== */
         #interventionFilters .filter-menu-toggle {
@@ -16094,7 +16406,194 @@ html.tm-layout-tablet-landscape.tm-fit-scale-active #interventionFilters .filter
     white-space: nowrap !important;
 }
 </style>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a12f59c9ae06ee60',t:'MTc4MjY3NzU5Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<style id="tm-pwa-settings-tablet-landscape-final-fix">
+/* Tablet orizzontale PWA: colonne riordinate per avere lo stesso bottom margin.
+   Sinistra come index: Notifiche, Backup Manuale, Zona Pericolosa.
+   Destra PWA: PWA Offline, Backup Automatico, Festività, TermoManager. */
+html.tm-layout-tablet-landscape #settingsSection[style*="display: block"] {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: 0 !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: auto auto auto auto !important;
+    grid-auto-flow: row !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: clamp(42px, 7vh, 52px) 0 8px 0 !important;
+    padding: 0 !important;
+    align-content: start !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid:first-of-type,
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid:last-of-type {
+    flex: 0 0 auto !important;
+    margin-top: clamp(42px, 7vh, 52px) !important;
+    margin-bottom: 8px !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere !important;
+}
+/* Colonna sinistra PWA: 4 card adattate all'altezza della colonna destra */
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid > .settings-section:first-child {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection #pwaSettingsSection {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid > .settings-section:nth-child(4) {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid > .danger-zone {
+    grid-column: 1 !important;
+    grid-row: 4 !important;
+}
+/* Colonna destra come index: Backup Automatico, Festività, TermoManager */
+html.tm-layout-tablet-landscape #settingsSection #externalBackupSection {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid > .settings-section:nth-child(5) {
+    grid-column: 2 !important;
+    grid-row: 2 / span 2 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection > .settings-grid > .about-app {
+    grid-column: 2 !important;
+    grid-row: 4 !important;
+    display: flex !important;
+}
+/* Compattazione leggera per far entrare le 4 card della colonna sinistra */
+html.tm-layout-tablet-landscape #settingsSection .settings-section,
+html.tm-layout-tablet-landscape #settingsSection .danger-zone,
+html.tm-layout-tablet-landscape #settingsSection .about-app {
+    padding: 8px 9px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .settings-section h3,
+html.tm-layout-tablet-landscape #settingsSection .danger-zone h3,
+html.tm-layout-tablet-landscape #settingsSection .about-app h3 {
+    font-size: 0.84rem !important;
+    line-height: 1.08 !important;
+    margin-bottom: 5px !important;
+    gap: 5px !important;
+}
+html.tm-layout-tablet-landscape #settingsSection p,
+html.tm-layout-tablet-landscape #settingsSection label,
+html.tm-layout-tablet-landscape #settingsSection .info-box {
+    font-size: 0.7rem !important;
+    line-height: 1.1 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection p {
+    margin-bottom: 4px !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .info-box {
+    padding: 6px !important;
+    margin: 4px 0 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .settings-option {
+    gap: 5px !important;
+    margin-bottom: 4px !important;
+    padding: 3px 0 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .settings-option > div {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+html.tm-layout-tablet-landscape #settingsSection #daysBeforeNotify {
+    width: 86px !important;
+    max-width: 100% !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .range-value {
+    margin-left: 0 !important;
+    font-size: 0.68rem !important;
+    white-space: nowrap !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .switch {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 23px !important;
+    margin-right: 0 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .slider:before {
+    width: 15px !important;
+    height: 15px !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .switch input:checked + .slider:before {
+    transform: translateX(19px) !important;
+}
+html.tm-layout-tablet-landscape #pwaSettingsSection #pwaStatusBox {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 8px !important;
+    row-gap: 2px !important;
+}
+html.tm-layout-tablet-landscape #pwaSettingsSection #pwaStatusBox p {
+    margin: 0 !important;
+    font-size: 0.7rem !important;
+    line-height: 1.08 !important;
+}
+html.tm-layout-tablet-landscape #pwaSettingsSection > div:last-child {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .btn,
+html.tm-layout-tablet-landscape #settingsSection button {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 26px !important;
+    padding: 4px 6px !important;
+    font-size: 0.66rem !important;
+    line-height: 1.05 !important;
+    white-space: normal !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .about-app i {
+    font-size: 2rem !important;
+}
+html.tm-layout-tablet-landscape #externalBackupSection > div[style*="margin-bottom"],
+html.tm-layout-tablet-landscape #settingsSection .settings-section:has(#localFestivityName) > div[style*="margin-bottom"],
+html.tm-layout-tablet-landscape #settingsSection .settings-section:nth-child(4) > div[style*="margin-bottom"] {
+    margin-bottom: 5px !important;
+    gap: 6px !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .settings-section:has(#localFestivityName) input.form-control {
+    min-height: 28px !important;
+    padding: 4px 8px !important;
+    font-size: 0.72rem !important;
+}
+html.tm-layout-tablet-landscape #settingsSection .danger-zone h4 {
+    font-size: 0.8rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 3px !important;
+}
+</style>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a12f59c9ae06ee60',t:'MTc4MjY3NzU5Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a156cd185cbe3a89',t:'MTc4MzA5MTI2MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a193d95e28b9406b',t:'MTc4MzczMTM5NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 
 
